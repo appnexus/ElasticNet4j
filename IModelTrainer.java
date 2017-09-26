@@ -14,6 +14,5 @@ public interface IModelTrainer {
      * @param maxIterations max iterations
      * @return new Betas trained for this iteration
      */
-    public LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights,
-        double[] oldBetasWithBeta0, double alpha, double lambda, double tolerance, int maxIterations);
+    public LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights, double[] oldBetasWithBeta0, double alpha, double lambda, double tolerance, int maxIterations);
 }

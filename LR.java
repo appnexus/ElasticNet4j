@@ -5,10 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class LR {
-    private final SparseObservation[] observations; // contains x, y and weight.
-                                                    // x does not hold the
-                                                    // intercept feature for
-                                                    // beta0
+    private final SparseObservation[] observations; // contains x, y and weight. x does not hold the intercept feature
+                                                    // for beta0
     private final int numOfFeatures;
     private final double totalSuccesses;
     private final double totalWeights;
@@ -19,15 +17,16 @@ public class LR {
     private final int maxIterations;
     private final IModelTrainer modelTrainer;
 
-    public LR(SparseObservation[] observations, int numOfFeatures, double[] initialBetasWithBeta0, double alpha,
-        double[] lambdaGrid, double tolerance, int maxIterations, IModelTrainer modelTrainer) {
+    public LR(SparseObservation[] observations, int numOfFeatures, double[] initialBetasWithBeta0, double alpha, double[] lambdaGrid, double tolerance, int maxIterations, IModelTrainer modelTrainer) {
         this.observations = observations;
         this.numOfFeatures = numOfFeatures;
         this.totalSuccesses = getTotalSuccesses(this.observations);
-        //System.out.println("TOTAL SUCCESSES -> " + this.totalSuccesses); // TODO -- remove
-        //System.out.println("TOTAL FAILURES -> " + getTotalFailure(this.observations)); // TODO -- remove
+        // System.out.println("TOTAL SUCCESSES -> " + this.totalSuccesses); // TODO --
+        // remove
+        // System.out.println("TOTAL FAILURES -> " +
+        // getTotalFailure(this.observations)); // TODO -- remove
         this.totalWeights = getTotalWeights(this.observations);
-        //System.out.println("TOTAL WEIGHTS -> " + this.totalWeights);// TODO -- remove
+        // System.out.println("TOTAL WEIGHTS -> " + this.totalWeights);// TODO -- remove
         this.initialBetasWithBeta0 = getInitialBetasWithBeta0(initialBetasWithBeta0);
         this.alpha = alpha;
         this.lambdaGrid = lambdaGrid;
@@ -54,9 +53,7 @@ public class LR {
         List<LRResult> lrResultList = new LinkedList<LRResult>();
         LRResult lrResult = null;
         for (double lambda : this.lambdaGrid) {
-            double[] startBetasWithBeta0 = ((warmStart && lrResult != null)
-                ? Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length)
-                : Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
+            double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ? Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length) : Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
             lrResult = calculateBetas(startBetasWithBeta0, lambda);
             lrResultList.add(lrResult);
         }
@@ -64,8 +61,7 @@ public class LR {
     }
 
     public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda) {
-        LRResult lrResult = this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights,
-            startBetasWithBeta0, this.alpha, lambda, tolerance, maxIterations);
+        LRResult lrResult = this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda, tolerance, maxIterations);
         return lrResult;
     }
 
@@ -79,14 +75,14 @@ public class LR {
         }
         return totalSuccesses;
     }
-    
+
     /**
      * HELPERS
      */
     private static double getTotalFailure(SparseObservation[] observations) {
         double totalFailure = 0;
         for (SparseObservation obs : observations) {
-            if (obs.getY() == 0){
+            if (obs.getY() == 0) {
                 totalFailure++;
             }
         }

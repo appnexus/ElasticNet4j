@@ -1,7 +1,7 @@
 package com.appnexus.opt.ml;
 
 public class LREvalUtil {
-    
+
     private static final double EPS = 1e-15;
 
     /**
@@ -20,7 +20,7 @@ public class LREvalUtil {
         }
         return error;
     }
-    
+
     /**
      * 
      * @param obs
@@ -54,7 +54,7 @@ public class LREvalUtil {
         }
         return actual == 0 ? Double.MAX_VALUE : (pred - actual) / actual;
     }
-   
+
     /**
      * 
      * @param obs
@@ -62,15 +62,15 @@ public class LREvalUtil {
      * @param c
      * @return
      */
-   public static double getBiasScaled(SparseObservation[] obs, double[] betasWithBeta0, double c) {
-       double pred = 0;
-       double actual = 0;
-       for (SparseObservation o : obs) {
-           actual = actual + o.getY();
-           pred = pred + c * LRUtil.calcProb(o.getX(), betasWithBeta0) * o.getWeight();
-       }
-       return actual == 0 ? Double.MAX_VALUE : (pred - actual) / actual;
-   }
+    public static double getBiasScaled(SparseObservation[] obs, double[] betasWithBeta0, double c) {
+        double pred = 0;
+        double actual = 0;
+        for (SparseObservation o : obs) {
+            actual = actual + o.getY();
+            pred = pred + c * LRUtil.calcProb(o.getX(), betasWithBeta0) * o.getWeight();
+        }
+        return actual == 0 ? Double.MAX_VALUE : (pred - actual) / actual;
+    }
 
     /**
      * 
@@ -90,10 +90,9 @@ public class LREvalUtil {
             nonClickWeight = nonClickWeight + o.getWeight() - o.getY();
             nonClickProb = nonClickProb + ((o.getWeight() - o.getY()) * prob);
         }
-        return (clickWeight == 0 || nonClickProb == 0) ? 0
-            : (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
+        return (clickWeight == 0 || nonClickProb == 0) ? 0 : (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
     }
-    
+
     /**
      * 
      * @param obs
@@ -113,21 +112,19 @@ public class LREvalUtil {
             nonClickWeight = nonClickWeight + o.getWeight() - o.getY();
             nonClickProb = nonClickProb + ((o.getWeight() - o.getY()) * prob);
         }
-        return (clickWeight == 0 || nonClickProb == 0) ? 0
-            : (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
+        return (clickWeight == 0 || nonClickProb == 0) ? 0 : (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
     }
-    
-    
+
     /**
      * 
      * @param obs
      * @param betasWithBeta0
      * @return
      */
-    public static double calculateScaleFactor(SparseObservation[] obs, double[] betasWithBeta0){
+    public static double calculateScaleFactor(SparseObservation[] obs, double[] betasWithBeta0) {
         double actualClicks = 0;
         double predictedClicks = 0;
-        for (SparseObservation o : obs){
+        for (SparseObservation o : obs) {
             actualClicks += o.getY();
             predictedClicks += o.getWeight() * LRUtil.calcProb(o.getX(), betasWithBeta0);
         }

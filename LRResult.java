@@ -15,7 +15,7 @@ public class LRResult implements Serializable {
     private long trainingTimeMillis;
 
     // MetaData
-    private List<LRIterationMetaData> metaDataList; 
+    private List<LRIterationMetaData> metaDataList;
 
     public double getAlpha() {
         return alpha;

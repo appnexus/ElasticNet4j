@@ -7,15 +7,15 @@ public class LRIterationMetaData {
     private double maxAbsDifferencePct;
     private double[] betas;
     private long trainingTimeMillis;
-    
+
     public double getAlpha() {
         return alpha;
     }
-    
-    public void setAlpha(double alpha){
+
+    public void setAlpha(double alpha) {
         this.alpha = alpha;
     }
-    
+
     public double getLamda() {
         return lambda;
     }
@@ -47,16 +47,15 @@ public class LRIterationMetaData {
     public void setBetas(double[] betas) {
         this.betas = betas;
     }
-    
-    public long getTrainingTimeMillis(){
+
+    public long getTrainingTimeMillis() {
         return trainingTimeMillis;
     }
-    
-    public void setTrainingTimeMillis(long trainingTimeMillis){
+
+    public void setTrainingTimeMillis(long trainingTimeMillis) {
         this.trainingTimeMillis = trainingTimeMillis;
     }
-    
-    
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
