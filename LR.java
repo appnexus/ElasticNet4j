@@ -2,7 +2,6 @@ package com.appnexus.opt.ml;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 public class LR {
     private final SparseObservation[] observations; // contains x, y and weight. x does not hold the intercept feature
@@ -49,8 +48,8 @@ public class LR {
         return Math.log(globalCtr / (1 - globalCtr));
     }
 
-    public List<LRResult> calculateBetas(boolean warmStart) {
-        List<LRResult> lrResultList = new LinkedList<LRResult>();
+    public LinkedList<LRResult> calculateBetas(boolean warmStart) {
+        LinkedList<LRResult> lrResultList = new LinkedList<LRResult>();
         LRResult lrResult = null;
         for (double lambda : this.lambdaGrid) {
             double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ? Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length) : Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
@@ -74,19 +73,6 @@ public class LR {
             totalSuccesses += obs.getY();
         }
         return totalSuccesses;
-    }
-
-    /**
-     * HELPERS
-     */
-    private static double getTotalFailure(SparseObservation[] observations) {
-        double totalFailure = 0;
-        for (SparseObservation obs : observations) {
-            if (obs.getY() == 0) {
-                totalFailure++;
-            }
-        }
-        return totalFailure;
     }
 
     private static double getTotalWeights(SparseObservation[] observations) {
