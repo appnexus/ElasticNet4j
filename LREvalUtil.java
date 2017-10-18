@@ -25,6 +25,25 @@ public class LREvalUtil {
      * 
      * @param obs
      * @param betasWithBeta0
+     * @return
+     */
+    public static double getEntropyNormalized(SparseObservation[] obs, double[] betasWithBeta0) {
+        double error = 0;
+        double totalImps = 0;
+        for (SparseObservation o : obs) {
+            totalImps += o.getWeight();
+            double prob = LRUtil.calcProb(o.getX(), betasWithBeta0);
+            double pred = Math.min(1.0 - EPS, Math.max(EPS, prob));
+            double errorObs = -1 * o.getY() * Math.log(pred) - (o.getWeight() - o.getY()) * Math.log(1.0 - pred);
+            error = error + errorObs;
+        }
+        return error / totalImps;
+    }
+
+    /**
+     * 
+     * @param obs
+     * @param betasWithBeta0
      * @param c
      * @return
      */
@@ -115,19 +134,4 @@ public class LREvalUtil {
         return (clickWeight == 0 || nonClickProb == 0) ? 0 : (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
     }
 
-    /**
-     * 
-     * @param obs
-     * @param betasWithBeta0
-     * @return
-     */
-    public static double calculateScaleFactor(SparseObservation[] obs, double[] betasWithBeta0) {
-        double actualClicks = 0;
-        double predictedClicks = 0;
-        for (SparseObservation o : obs) {
-            actualClicks += o.getY();
-            predictedClicks += o.getWeight() * LRUtil.calcProb(o.getX(), betasWithBeta0);
-        }
-        return predictedClicks == 0 ? 0 : actualClicks / predictedClicks;
-    }
 }
