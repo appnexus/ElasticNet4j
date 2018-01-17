@@ -1,31 +1,34 @@
 package com.appnexus.opt.ml;
 
+import java.util.Arrays;
+
 public class LRIterationMetaData {
     private double alpha;
     private double lambda;
     private int iteration;
     private double maxAbsDifferencePct;
+    private double trainingEntropy;
     private double[] betas;
     private long trainingTimeMillis;
 
     public double getAlpha() {
-        return alpha;
+        return this.alpha;
     }
 
     public void setAlpha(double alpha) {
         this.alpha = alpha;
     }
 
-    public double getLamda() {
-        return lambda;
+    public double getLambda() {
+        return this.lambda;
     }
 
-    public void setLamda(double lamda) {
-        this.lambda = lamda;
+    public void setLambda(double lambda) {
+        this.lambda = lambda;
     }
 
     public int getIteration() {
-        return iteration;
+        return this.iteration;
     }
 
     public void setIteration(int iteration) {
@@ -33,15 +36,23 @@ public class LRIterationMetaData {
     }
 
     public double getMaxAbsDifferencePct() {
-        return maxAbsDifferencePct;
+        return this.maxAbsDifferencePct;
     }
 
     public void setMaxAbsDifferencePct(double maxAbsDifferencePct) {
         this.maxAbsDifferencePct = maxAbsDifferencePct;
     }
 
+    public double getTrainingEntropy() {
+        return this.trainingEntropy;
+    }
+
+    public void setTrainingEntropy(double trainingEntropy) {
+        this.trainingEntropy = trainingEntropy;
+    }
+
     public double[] getBetas() {
-        return betas;
+        return this.betas;
     }
 
     public void setBetas(double[] betas) {
@@ -49,7 +60,7 @@ public class LRIterationMetaData {
     }
 
     public long getTrainingTimeMillis() {
-        return trainingTimeMillis;
+        return this.trainingTimeMillis;
     }
 
     public void setTrainingTimeMillis(long trainingTimeMillis) {
@@ -59,18 +70,20 @@ public class LRIterationMetaData {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("LRMetaData [lamda=");
-        builder.append(lambda);
-        builder.append(", alpha=");
-        builder.append(alpha);
+        builder.append("LRIterationMetaData [alpha=");
+        builder.append(this.alpha);
+        builder.append(", lambda=");
+        builder.append(this.lambda);
         builder.append(", iteration=");
-        builder.append(iteration);
+        builder.append(this.iteration);
         builder.append(", maxAbsDifferencePct=");
-        builder.append(maxAbsDifferencePct);
-        // builder.append(", betas=");
-        // builder.append(Arrays.toString(betas));
-        builder.append(", training time (millis)=");
-        builder.append(trainingTimeMillis);
+        builder.append(this.maxAbsDifferencePct);
+        builder.append(", trainingEntropy=");
+        builder.append(this.trainingEntropy);
+        builder.append(", betas=");
+        builder.append(Arrays.toString(this.betas));
+        builder.append(", trainingTimeMillis=");
+        builder.append(this.trainingTimeMillis);
         builder.append("]");
         return builder.toString();
     }

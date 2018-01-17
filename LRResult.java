@@ -12,6 +12,7 @@ public class LRResult implements Serializable {
     private double[] betasWithBeta0;
     private int iteration;
     private double maxAbsDifferencePct;
+    private double trainingEntropy;
     private long trainingTimeMillis;
 
     // MetaData
@@ -73,6 +74,14 @@ public class LRResult implements Serializable {
         this.trainingTimeMillis = trainingTimeMillis;
     }
 
+    public double getTrainingEntropy() {
+        return this.trainingEntropy;
+    }
+
+    public void setTrainingEntropy(double trainingEntropy) {
+        this.trainingEntropy = trainingEntropy;
+    }
+
     public static long getSerialversionuid() {
         return serialVersionUID;
     }
@@ -81,19 +90,22 @@ public class LRResult implements Serializable {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("LRResult [alpha=");
-        builder.append(alpha);
+        builder.append(this.alpha);
         builder.append(", lambda=");
-        builder.append(lambda);
+        builder.append(this.lambda);
         builder.append(", betasWithBeta0=");
-        builder.append(Arrays.toString(betasWithBeta0));
+        builder.append(Arrays.toString(this.betasWithBeta0));
         builder.append(", iteration=");
-        builder.append(iteration);
+        builder.append(this.iteration);
         builder.append(", maxAbsDifferencePct=");
-        builder.append(maxAbsDifferencePct);
+        builder.append(this.maxAbsDifferencePct);
+        builder.append(", trainingEntropy=");
+        builder.append(this.trainingEntropy);
         builder.append(", trainingTimeMillis=");
-        builder.append(trainingTimeMillis);
+        builder.append(this.trainingTimeMillis);
+        builder.append(", metaDataList=");
+        builder.append(this.metaDataList);
         builder.append("]");
         return builder.toString();
     }
-
 }
