@@ -12,11 +12,12 @@ public class LR {
     private final double[] initialBetasWithBeta0; // beta0 in first index
     private final double alpha;
     private final double[] lambdaGrid;
+    private final double[] lambdaScaleFactors;
     private final double tolerance;
     private final int maxIterations;
     private final IModelTrainer modelTrainer;
 
-    public LR(SparseObservation[] observations, int numOfFeatures, double[] initialBetasWithBeta0, double alpha, double[] lambdaGrid, double tolerance, int maxIterations, IModelTrainer modelTrainer) {
+    public LR(SparseObservation[] observations, int numOfFeatures, double[] initialBetasWithBeta0, double alpha, double[] lambdaGrid, double[] lambdaScaleFactors, double tolerance, int maxIterations, IModelTrainer modelTrainer) {
         this.observations = observations;
         this.numOfFeatures = numOfFeatures;
         this.totalSuccesses = getTotalSuccesses(this.observations);
@@ -29,6 +30,7 @@ public class LR {
         this.initialBetasWithBeta0 = getInitialBetasWithBeta0(initialBetasWithBeta0);
         this.alpha = alpha;
         this.lambdaGrid = lambdaGrid;
+        this.lambdaScaleFactors = lambdaScaleFactors;
         this.tolerance = tolerance;
         this.maxIterations = maxIterations;
         this.modelTrainer = modelTrainer;
@@ -53,14 +55,14 @@ public class LR {
         LRResult lrResult = null;
         for (double lambda : this.lambdaGrid) {
             double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ? Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length) : Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
-            lrResult = calculateBetas(startBetasWithBeta0, lambda);
+            lrResult = calculateBetas(startBetasWithBeta0, lambda, this.lambdaScaleFactors);
             lrResultList.add(lrResult);
         }
         return lrResultList;
     }
 
-    public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda) {
-        LRResult lrResult = this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda, tolerance, maxIterations);
+    public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda, double[] lambdaScaleFactors) {
+        LRResult lrResult = this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda, lambdaScaleFactors, tolerance, maxIterations);
         return lrResult;
     }
 
