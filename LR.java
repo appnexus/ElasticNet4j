@@ -55,14 +55,14 @@ public class LR {
         LRResult lrResult = null;
         for (double lambda : this.lambdaGrid) {
             double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ? Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length) : Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
-            lrResult = calculateBetas(startBetasWithBeta0, lambda, this.lambdaScaleFactors);
+            lrResult = calculateBetas(startBetasWithBeta0, lambda);
             lrResultList.add(lrResult);
         }
         return lrResultList;
     }
 
-    public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda, double[] lambdaScaleFactors) {
-        LRResult lrResult = this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda, lambdaScaleFactors, tolerance, maxIterations);
+    public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda) {
+        LRResult lrResult = this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda, this.lambdaScaleFactors, tolerance, maxIterations);
         return lrResult;
     }
 
