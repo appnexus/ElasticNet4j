@@ -2,6 +2,7 @@ package com.appnexus.opt.ml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import smile.math.SparseArray.Entry;
 
 public class CoordinateDescentTrainer implements IModelTrainer {
@@ -54,6 +55,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         double lambdaMulOneMinusAlpha = lambda * (1 - alpha);
         double[] newBetasWithBeta0 = null;
         double maxAbsDifferencePct = 0;
+        double trainingEntropy = 0;
         int iters = 0;
 
         // Pre-processing
@@ -112,7 +114,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
              * Calculate convergence error
              */
             maxAbsDifferencePct = LRUtil.getMaxAbsDifferencePct(oldBetasWithBeta0, newBetasWithBeta0);
-
+            trainingEntropy = LREvalUtil.getEntropy(observations, newBetasWithBeta0);
             long endLoop = System.currentTimeMillis();
 
             /**
@@ -121,9 +123,10 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             // Create MetaData
             LRIterationMetaData lrmd = new LRIterationMetaData();
             lrmd.setAlpha(alpha);
-            lrmd.setLamda(lambda);
+            lrmd.setLambda(lambda);
             lrmd.setIteration(iters);
             lrmd.setMaxAbsDifferencePct(maxAbsDifferencePct);
+            lrmd.setTrainingEntropy(trainingEntropy);
             lrmd.setBetas(newBetasWithBeta0);
             lrmd.setTrainingTimeMillis(endLoop - startLoop);
 
@@ -147,6 +150,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         lrResult.setLambda(lambda);
         lrResult.setIteration(iters);
         lrResult.setMaxAbsDifferencePct(maxAbsDifferencePct);
+        lrResult.setTrainingEntropy(trainingEntropy);
         lrResult.setBetasWithBeta0(newBetasWithBeta0);
         lrResult.setTrainingTimeMillis(trainingTimeMillis);
         return lrResult;
