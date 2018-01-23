@@ -65,30 +65,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
 
         // Pre-processing
         // long preProcStart = System.currentTimeMillis();
-        double[][] weightedCovar = new double[oldBetasWithBeta0.length][oldBetasWithBeta0.length];
-        for (int i = 0; i < observations.length; ++i) {
-            for (Entry xRowj : observations[i].getX()) {
-                int j = xRowj.i + 1;
-                for (Entry xRowk : observations[i].getX()) {
-                    int k = xRowk.i + 1;
-                    if (j != k) {
-                        weightedCovar[j][k] += mi[i] * xRowj.x * xRowk.x;
-                    }
-                }
-            }
-            for (Entry xRowj : observations[i].getX()) {
-                int j = xRowj.i + 1;
-                if (j != 0) {
-                    weightedCovar[j][0] += mi[i] * xRowj.x * 1;
-                }
-            }
-            for (Entry xRowk : observations[i].getX()) {
-                int k = xRowk.i + 1;
-                if (k != 0) {
-                    weightedCovar[0][k] += mi[i] * 1 * xRowk.x;
-                }
-            }
-        }
+        double[][] weightedCovar = getWeightedCovarMartix(oldBetasWithBeta0.length, observations, mi);
         // long preProcEnd = System.currentTimeMillis();
 
         do {
@@ -174,5 +151,38 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
             residual += weightedCovar[j][k] * currentbetasWithBeta0[k];
         }
         return cj_1 - residual / totalWeights;
+    }
+
+    /**
+     * Calculate mi weighted covariance martix
+     * 
+     * @param size Width / Height of the square matrix
+     * @param observations Array of SparseObservations
+     * @param mi Current Weights
+     * @return
+     */
+    static double[][] getWeightedCovarMartix(int size, SparseObservation[] observations, double[] mi) {
+        double[][] weightedCovar = new double[size][size];
+        for (int i = 0; i < observations.length; ++i) {
+            for (Entry xRowj : observations[i].getX()) {
+                int j = xRowj.i + 1;
+                for (Entry xRowk : observations[i].getX()) {
+                    int k = xRowk.i + 1;
+                    if (j != k) {
+                        weightedCovar[j][k] += mi[i] * xRowj.x * xRowk.x;
+                    }
+                }
+            }
+            for (Entry xRowj : observations[i].getX()) {
+                int j = xRowj.i + 1;
+                if (j != 0) {
+                    double value = mi[i] * xRowj.x * 1;
+                    weightedCovar[j][0] += value;
+                    weightedCovar[0][j] += value;
+
+                }
+            }
+        }
+        return weightedCovar;
     }
 }
