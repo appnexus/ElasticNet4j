@@ -61,6 +61,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
         }
         double[] newBetasWithBeta0 = null;
         double maxAbsDifferencePct = 0;
+        double trainingEntropy = 0;
         int iters = 0;
 
         // Pre-processing
@@ -96,7 +97,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
              * Calculate convergence error
              */
             maxAbsDifferencePct = LRUtil.getMaxAbsDifferencePct(oldBetasWithBeta0, newBetasWithBeta0);
-
+            trainingEntropy = LREvalUtil.getEntropy(observations, newBetasWithBeta0);
             long endLoop = System.currentTimeMillis();
 
             /**
@@ -108,6 +109,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
             lrmd.setLambda(lambda);
             lrmd.setIteration(iters);
             lrmd.setMaxAbsDifferencePct(maxAbsDifferencePct);
+            lrmd.setTrainingEntropy(trainingEntropy);
             lrmd.setBetas(newBetasWithBeta0);
             lrmd.setTrainingTimeMillis(endLoop - startLoop);
 
@@ -131,6 +133,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
         lrResult.setLambda(lambda);
         lrResult.setIteration(iters);
         lrResult.setMaxAbsDifferencePct(maxAbsDifferencePct);
+        lrResult.setTrainingEntropy(trainingEntropy);
         lrResult.setBetasWithBeta0(newBetasWithBeta0);
         lrResult.setTrainingTimeMillis(trainingTimeMillis);
         return lrResult;
@@ -168,8 +171,10 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
                 int j = xRowj.i + 1;
                 for (Entry xRowk : observations[i].getX()) {
                     int k = xRowk.i + 1;
-                    if (j != k) {
-                        weightedCovar[j][k] += mi[i] * xRowj.x * xRowk.x;
+                    if (j < k) {
+                        double value = mi[i] * xRowj.x * xRowk.x;
+                        weightedCovar[j][k] += value;
+                        weightedCovar[k][j] += value;
                     }
                 }
             }

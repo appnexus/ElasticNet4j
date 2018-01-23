@@ -59,6 +59,13 @@ public class LRUtil {
         return maxAbsDifferencePct <= tolerance;
     }
 
+    /**
+     * Get Max Absolute % difference between oldBetas[j] and newBetas[j] across all values of j
+     * 
+     * @param oldBetas
+     * @param newBetas
+     * @return
+     */
     public static double getMaxAbsDifferencePct(double[] oldBetas, double[] newBetas) {
         double sumAbsOfNewBetas = 0;
         for (int i = 0; i < newBetas.length; ++i) {
@@ -74,9 +81,26 @@ public class LRUtil {
         return maxAbsBetaDiff / sumAbsOfNewBetas;
     }
 
-    public static void main(String[] args) {
-        for (double lambda : getLambdaGrid(32, 5, 36)) {
-            System.out.println(lambda);
+    /**
+     * Generate Scale Factors for scaling lambda for each beta[j]
+     * 
+     * @param trainingObsArr
+     * @param featureVectorLen
+     * @return
+     */
+    public static double[] generateLambdaScaleFactors(SparseObservation[] trainingObsArr, int featureVectorLen) {
+        double[] lambdaScaleFactors = new double[featureVectorLen];
+        double imps = 0;
+        for (SparseObservation trainingObs : trainingObsArr) {
+            imps += trainingObs.getWeight();
+            for (smile.math.SparseArray.Entry feature : trainingObs.getX()) {
+                lambdaScaleFactors[feature.i] += trainingObs.getY();
+            }
         }
+        // TODO think about 1/imps vs ?/imps
+        for (int i = 0; i < lambdaScaleFactors.length; ++i) {
+            lambdaScaleFactors[i] = lambdaScaleFactors[i] == 0 ? 1 / imps : lambdaScaleFactors[i] / imps;
+        }
+        return lambdaScaleFactors;
     }
 }
