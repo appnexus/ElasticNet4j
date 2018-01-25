@@ -28,11 +28,10 @@ public class LRUtil {
     public static double[] getLambdaGrid(int size, double start, double end) {
         if (size > 0) {
             double[] grid = new double[size];
-            double step = (end + 1 - start) / size;
-            for (int i = 0; i < size - 1; ++i) {
+            double step = (end - start) / (size - 1);
+            for (int i = 0; i < size; ++i) {
                 grid[i] = Math.exp(-1 * (i * step + start));
             }
-            grid[size - 1] = 0;
             return grid;
         }
         return null;
