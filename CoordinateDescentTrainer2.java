@@ -3,8 +3,6 @@ package com.appnexus.opt.ml;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import smile.math.SparseArray.Entry;
-
 public class CoordinateDescentTrainer2 implements IModelTrainer {
     private static final double PROB_EPSILON = 1e-15;
 
@@ -36,7 +34,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
         for (int i = 0; i < observations.length; ++i) {
             aj[0] += mi[i]; // a-term for intercept
             cj_1[0] += mi[i] * zi[i]; // c-term first part for intercept
-            for (Entry xj : observations[i].getX()) {
+            for (SparseArray.Entry xj : observations[i].getX()) {
                 int j = xj.i;
                 double xij = xj.x;
                 aj[j + 1] += mi[i] * xij * xij; // a-terms
@@ -167,9 +165,9 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
     static double[][] getWeightedCovarMartix(int size, SparseObservation[] observations, double[] mi) {
         double[][] weightedCovar = new double[size][size];
         for (int i = 0; i < observations.length; ++i) {
-            for (Entry xRowj : observations[i].getX()) {
+            for (SparseArray.Entry xRowj : observations[i].getX()) {
                 int j = xRowj.i + 1;
-                for (Entry xRowk : observations[i].getX()) {
+                for (SparseArray.Entry xRowk : observations[i].getX()) {
                     int k = xRowk.i + 1;
                     if (j < k) {
                         double value = mi[i] * xRowj.x * xRowk.x;
@@ -178,7 +176,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
                     }
                 }
             }
-            for (Entry xRowj : observations[i].getX()) {
+            for (SparseArray.Entry xRowj : observations[i].getX()) {
                 int j = xRowj.i + 1;
                 if (j != 0) {
                     double value = mi[i] * xRowj.x * 1;

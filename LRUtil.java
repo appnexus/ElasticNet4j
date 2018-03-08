@@ -1,8 +1,5 @@
 package com.appnexus.opt.ml;
 
-import smile.math.SparseArray;
-import smile.math.SparseArray.Entry;
-
 public class LRUtil {
 
     public static double calcProb(SparseArray xRow, double[] betasWithBeta0) {
@@ -19,7 +16,7 @@ public class LRUtil {
 
     public static double betasDotXi(SparseArray xRow, double[] betasWithBeta0) {
         double betasDotXi = betasWithBeta0[0];
-        for (Entry entry : xRow) {
+        for (SparseArray.Entry entry : xRow) {
             betasDotXi += entry.x * betasWithBeta0[entry.i + 1];
         }
         return betasDotXi;
@@ -92,7 +89,7 @@ public class LRUtil {
         double imps = 0;
         for (SparseObservation trainingObs : trainingObsArr) {
             imps += trainingObs.getWeight();
-            for (smile.math.SparseArray.Entry feature : trainingObs.getX()) {
+            for (SparseArray.Entry feature : trainingObs.getX()) {
                 lambdaScaleFactors[feature.i] += trainingObs.getY();
             }
         }

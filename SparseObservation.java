@@ -1,7 +1,5 @@
 package com.appnexus.opt.ml;
 
-import smile.math.SparseArray;
-
 public class SparseObservation {
     private final SparseArray x;
     private final double y;
