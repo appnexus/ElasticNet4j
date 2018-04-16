@@ -25,7 +25,7 @@ public class LRUtil {
     public static double[] getLambdaGrid(int size, double start, double end) {
         if (size > 0) {
             double[] grid = new double[size];
-            double step = (end - start) / (size - 1);
+            double step = (size == 1) ? 0.0 : (end - start) / (size - 1);
             for (int i = 0; i < size; ++i) {
                 grid[i] = Math.exp(-1 * (i * step + start));
             }

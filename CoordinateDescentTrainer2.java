@@ -170,7 +170,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
                 for (SparseArray.Entry xRowk : observations[i].getX()) {
                     int k = xRowk.i + 1;
                     if (j < k) {
-                        double value = mi[i] * xRowj.x * xRowk.x;
+                        double value = mi[i] * xRowj.x2;
                         weightedCovar[j][k] += value;
                         weightedCovar[k][j] += value;
                     }
@@ -179,7 +179,7 @@ public class CoordinateDescentTrainer2 implements IModelTrainer {
             for (SparseArray.Entry xRowj : observations[i].getX()) {
                 int j = xRowj.i + 1;
                 if (j != 0) {
-                    double value = mi[i] * xRowj.x * 1;
+                    double value = mi[i] * xRowj.x * 1; // Multipy by 1 ?
                     weightedCovar[j][0] += value;
                     weightedCovar[0][j] += value;
 

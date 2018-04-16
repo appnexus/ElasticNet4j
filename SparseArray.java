@@ -14,10 +14,12 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
         public int i;
         public double x;
+        public double x2;
 
         public Entry(int i, double x) {
             this.i = i;
             this.x = x;
+            this.x2 = x * x;
         }
     }
 
@@ -70,6 +72,7 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
             Entry e = it.next();
             if (e.i == i) {
                 e.x = x;
+                e.x2 = x * x;
                 return false;
             } else if (e.i > i) {
                 array.add(k, new Entry(i, x));
