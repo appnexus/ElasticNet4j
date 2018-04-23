@@ -44,13 +44,13 @@ public class LREvalUtil {
      * 
      * @param obs
      * @param betasWithBeta0
-     * @param c
+     * @param scale
      * @return
      */
-    public static double getEntropyScaled(SparseObservation[] obs, double[] betasWithBeta0, double c) {
+    public static double getEntropyScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
         double error = 0;
         for (SparseObservation o : obs) {
-            double prob = c * LRUtil.calcProb(o.getX(), betasWithBeta0);
+            double prob = scale * LRUtil.calcProb(o.getX(), betasWithBeta0);
             double pred = Math.min(1.0 - EPS, Math.max(EPS, prob));
             double errorObs = -1 * o.getY() * Math.log(pred) - (o.getWeight() - o.getY()) * Math.log(1.0 - pred);
             error = error + errorObs;
@@ -78,15 +78,15 @@ public class LREvalUtil {
      * 
      * @param obs
      * @param betasWithBeta0
-     * @param c
+     * @param scale
      * @return
      */
-    public static double getBiasScaled(SparseObservation[] obs, double[] betasWithBeta0, double c) {
+    public static double getBiasScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
         double pred = 0;
         double actual = 0;
         for (SparseObservation o : obs) {
             actual = actual + o.getY();
-            pred = pred + c * LRUtil.calcProb(o.getX(), betasWithBeta0) * o.getWeight();
+            pred = pred + scale * LRUtil.calcProb(o.getX(), betasWithBeta0) * o.getWeight();
         }
         return actual == 0 ? Double.MAX_VALUE : (pred - actual) / actual;
     }
@@ -116,16 +116,16 @@ public class LREvalUtil {
      * 
      * @param obs
      * @param betasWithBeta0
-     * @param c
+     * @param scale
      * @return
      */
-    public static double getPredRatioScaled(SparseObservation[] obs, double[] betasWithBeta0, double c) {
+    public static double getPredRatioScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
         double clickWeight = 0;
         double nonClickWeight = 0;
         double clickProb = 0;
         double nonClickProb = 0;
         for (SparseObservation o : obs) {
-            double prob = c * LRUtil.calcProb(o.getX(), betasWithBeta0);
+            double prob = scale * LRUtil.calcProb(o.getX(), betasWithBeta0);
             clickWeight = clickWeight + o.getY();
             clickProb = clickProb + o.getY() * prob;
             nonClickWeight = nonClickWeight + o.getWeight() - o.getY();
