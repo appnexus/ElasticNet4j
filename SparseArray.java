@@ -39,6 +39,7 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
         return array.isEmpty();
     }
 
+    @Override
     public Iterator<Entry> iterator() {
         return array.iterator();
     }
@@ -55,6 +56,7 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
     /**
      * Sets or add an entry.
+     * 
      * @param i the index of entry.
      * @param x the value of entry.
      * @return true if a new entry added, false if an existing entry updated.
@@ -83,6 +85,7 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
     /**
      * Append an entry to the array, optimizing for the case where the index is greater than all existing indices in the array.
+     * 
      * @param i the index of entry.
      * @param x the value of entry.
      */
@@ -94,6 +97,7 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
     /**
      * Removes an entry.
+     * 
      * @param i the index of entry.
      */
     public void remove(int i) {

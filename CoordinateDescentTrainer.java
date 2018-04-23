@@ -49,8 +49,14 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         /**
          * update and refine betas
          */
-        double lambdaMulAlpha = lambda * alpha;
-        double lambdaMulOneMinusAlpha = lambda * (1 - alpha);
+        double[] scaledLambdaMulAlpha = new double[oldBetasWithBeta0.length - 1];
+        for (int i = 0; i < scaledLambdaMulAlpha.length; ++i) {
+            scaledLambdaMulAlpha[i] = lambda * alpha * lambdaScaleFactors[i];
+        }
+        double[] scaledLambdaMulOneMinusAlpha = new double[oldBetasWithBeta0.length - 1];
+        for (int i = 0; i < scaledLambdaMulOneMinusAlpha.length; ++i) {
+            scaledLambdaMulOneMinusAlpha[i] = lambda * (1 - alpha) * lambdaScaleFactors[i];
+        }
         double[] newBetasWithBeta0 = null;
         double maxAbsDifferencePct = 0;
         double trainingEntropy = 0;
@@ -58,30 +64,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
 
         // Pre-processing
         // long preProcStart = System.currentTimeMillis();
-        double[][] weightedCovar = new double[oldBetasWithBeta0.length][oldBetasWithBeta0.length];
-        for (int i = 0; i < observations.length; ++i) {
-            for (SparseArray.Entry xRowj : observations[i].getX()) {
-                int j = xRowj.i + 1;
-                for (SparseArray.Entry xRowk : observations[i].getX()) {
-                    int k = xRowk.i + 1;
-                    if (j != k) {
-                        weightedCovar[j][k] += mi[i] * xRowj.x * xRowk.x;
-                    }
-                }
-            }
-            for (SparseArray.Entry xRowj : observations[i].getX()) {
-                int j = xRowj.i + 1;
-                if (j != 0) {
-                    weightedCovar[j][0] += mi[i] * xRowj.x * 1;
-                }
-            }
-            for (SparseArray.Entry xRowk : observations[i].getX()) {
-                int k = xRowk.i + 1;
-                if (k != 0) {
-                    weightedCovar[0][k] += mi[i] * 1 * xRowk.x;
-                }
-            }
-        }
+        double[][] weightedCovar = getWeightedCovarMartix(oldBetasWithBeta0.length, observations, mi);
         // long preProcEnd = System.currentTimeMillis();
 
         do {
@@ -92,15 +75,15 @@ public class CoordinateDescentTrainer implements IModelTrainer {
                 if (aj[j] == 0) {
                     newBetasWithBeta0[j] = 0;
                 } else {
-                    double denominator = j == 0 ? aj[0] : aj[j] + lambdaMulOneMinusAlpha;
+                    double denominator = j == 0 ? aj[0] : aj[j] + scaledLambdaMulOneMinusAlpha[j - 1];
                     if (denominator != 0) {
                         double cj = calculateCj2(j, weightedCovar, newBetasWithBeta0, cj_1[j], totalWeights);
                         if (j == 0) {
                             newBetasWithBeta0[0] = cj / denominator;
-                        } else if (cj < -lambdaMulAlpha) {
-                            newBetasWithBeta0[j] = denominator == 0 ? 0 : (cj + lambdaMulAlpha) / denominator;
-                        } else if (cj > lambdaMulAlpha) {
-                            newBetasWithBeta0[j] = denominator == 0 ? 0 : (cj - lambdaMulAlpha) / denominator;
+                        } else if (cj < -scaledLambdaMulAlpha[j - 1]) {
+                            newBetasWithBeta0[j] = denominator == 0 ? 0 : (cj + scaledLambdaMulAlpha[j - 1]) / denominator;
+                        } else if (cj > scaledLambdaMulAlpha[j - 1]) {
+                            newBetasWithBeta0[j] = denominator == 0 ? 0 : (cj - scaledLambdaMulAlpha[j - 1]) / denominator;
                         } else {
                             newBetasWithBeta0[j] = 0;
                         }
@@ -169,5 +152,40 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             residual += weightedCovar[j][k] * currentbetasWithBeta0[k];
         }
         return cj_1 - residual / totalWeights;
+    }
+
+    /**
+     * Calculate mi weighted covariance martix
+     * 
+     * @param size Width / Height of the square matrix
+     * @param observations Array of SparseObservations
+     * @param mi Current Weights
+     * @return
+     */
+    static double[][] getWeightedCovarMartix(int size, SparseObservation[] observations, double[] mi) {
+        double[][] weightedCovar = new double[size][size];
+        for (int i = 0; i < observations.length; ++i) {
+            for (SparseArray.Entry xRowj : observations[i].getX()) {
+                int j = xRowj.i + 1;
+                for (SparseArray.Entry xRowk : observations[i].getX()) {
+                    int k = xRowk.i + 1;
+                    if (j < k) {
+                        double value = mi[i] * xRowj.x * xRowk.x;
+                        weightedCovar[j][k] += value;
+                        weightedCovar[k][j] += value;
+                    }
+                }
+            }
+            for (SparseArray.Entry xRowj : observations[i].getX()) {
+                int j = xRowj.i + 1;
+                if (j != 0) {
+                    double value = mi[i] * xRowj.x * 1; // Multipy by 1 ?
+                    weightedCovar[j][0] += value;
+                    weightedCovar[0][j] += value;
+
+                }
+            }
+        }
+        return weightedCovar;
     }
 }
