@@ -5,10 +5,9 @@ public class LREvalUtil {
     private static final double EPS = 1e-15;
 
     /**
-     * 
-     * @param obs
-     * @param betasWithBeta0
-     * @return
+     * @param obs            data
+     * @param betasWithBeta0 beta weights
+     * @return cross entropy of p from data vs true distribution
      */
     public static double getEntropy(SparseObservation[] obs, double[] betasWithBeta0) {
         double error = 0;
@@ -22,10 +21,9 @@ public class LREvalUtil {
     }
 
     /**
-     * 
-     * @param obs
-     * @param betasWithBeta0
-     * @return
+     * @param obs            data
+     * @param betasWithBeta0 beta weights
+     * @return cross entropy but normalized by number of impressions
      */
     public static double getEntropyNormalized(SparseObservation[] obs, double[] betasWithBeta0) {
         double error = 0;
@@ -41,7 +39,6 @@ public class LREvalUtil {
     }
 
     /**
-     * 
      * @param obs
      * @param betasWithBeta0
      * @param scale
@@ -59,9 +56,8 @@ public class LREvalUtil {
     }
 
     /**
-     *
-     * @param obs
-     * @param betasWithBeta0
+     * @param obs            data
+     * @param betasWithBeta0 beta weights
      * @return (number of predicted clicks - number of actual clicks)/(number of actual clicks)
      */
     public static double getBias(SparseObservation[] obs, double[] betasWithBeta0) {
@@ -75,7 +71,6 @@ public class LREvalUtil {
     }
 
     /**
-     * 
      * @param obs
      * @param betasWithBeta0
      * @param scale
@@ -92,7 +87,6 @@ public class LREvalUtil {
     }
 
     /**
-     * 
      * @param obs
      * @param betasWithBeta0
      * @return
@@ -109,11 +103,12 @@ public class LREvalUtil {
             nonClickWeight = nonClickWeight + o.getWeight() - o.getY();
             nonClickProb = nonClickProb + ((o.getWeight() - o.getY()) * prob);
         }
-        return (clickWeight == 0 || nonClickProb == 0) ? 0 : (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
+        return (clickWeight == 0 || nonClickProb == 0) ?
+            0 :
+            (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
     }
 
     /**
-     * 
      * @param obs
      * @param betasWithBeta0
      * @param scale
@@ -131,7 +126,9 @@ public class LREvalUtil {
             nonClickWeight = nonClickWeight + o.getWeight() - o.getY();
             nonClickProb = nonClickProb + ((o.getWeight() - o.getY()) * prob);
         }
-        return (clickWeight == 0 || nonClickProb == 0) ? 0 : (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
+        return (clickWeight == 0 || nonClickProb == 0) ?
+            0 :
+            (clickProb / clickWeight) / (nonClickProb / nonClickWeight);
     }
 
 }
