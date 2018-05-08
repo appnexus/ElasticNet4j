@@ -3,16 +3,43 @@ package com.appnexus.opt.ml;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class LRUtilTest {
     public static final int MT_LAMBDA_GRID_SIZE = 64;
     public static final double MT_LAMBDA_GRID_START = -5;
     public static final double MT_LAMBDA_GRID_END = 5;
-    
+
+    @Test
+    public void testCalcProbWithSparseArrayAndBetas() throws Exception {
+        int[] xi1 = {1, 2, 3, 4};
+        double[] xv1 = {1, 2, 3, 4};
+        SparseObservation so1 = makeTjSparseObservation(xi1, xv1, 5, 10);
+        double[] betasWithBeta0 = new double[]{-1, 0, 1, 0, 0, 0};
+        Assert.assertEquals(LRUtil.calcProb(so1.getX(), betasWithBeta0), 0.5, 1e-10);
+    }
+
+    @Test
+    public void testCalcProbWithDotProduct() {
+        Assert.assertEquals(0, LRUtil.calcProb(-Double.MAX_VALUE), 1e-10);
+        Assert.assertEquals(0.5, LRUtil.calcProb(0), 1e-10);
+        Assert.assertEquals(1, LRUtil.calcProb(Double.MAX_VALUE), 1e-10);
+    }
+
     @Test
     public void testExpit() {
         Assert.assertEquals(0, LRUtil.expit(-Double.MAX_VALUE), 1e-10);
         Assert.assertEquals(0.5, LRUtil.expit(0), 1e-10);
         Assert.assertEquals(1, LRUtil.expit(Double.MAX_VALUE), 1e-10);
+    }
+
+    @Test
+    public void testBetasDotXi() throws Exception {
+        int[] xi1 = {1, 2, 3, 4};
+        double[] xv1 = {1, 2, 3, 4};
+        SparseObservation so1 = makeTjSparseObservation(xi1, xv1, 5, 10);
+        double[] betasWithBeta0 = new double[]{-1, 0, 1, 0, 2, 0};
+        Assert.assertEquals(LRUtil.betasDotXi(so1.getX(), betasWithBeta0), 6.0, 1e-10);
     }
 
     @Test
