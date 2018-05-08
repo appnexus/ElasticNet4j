@@ -39,10 +39,10 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs
-     * @param betasWithBeta0
-     * @param scale
-     * @return
+     * @param obs            data
+     * @param betasWithBeta0 beta weights
+     * @param scale          scale factor
+     * @return cross entropy but with probabilities scaled by scale factor
      */
     public static double getEntropyScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
         double error = 0;
@@ -58,7 +58,7 @@ public class LREvalUtil {
     /**
      * @param obs            data
      * @param betasWithBeta0 beta weights
-     * @return (number of predicted clicks - number of actual clicks)/(number of actual clicks)
+     * @return bias = (number of predicted clicks - number of actual clicks) / (number of actual clicks)
      */
     public static double getBias(SparseObservation[] obs, double[] betasWithBeta0) {
         double pred = 0;
@@ -71,10 +71,10 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs
-     * @param betasWithBeta0
-     * @param scale
-     * @return
+     * @param obs            data
+     * @param betasWithBeta0 beta weights
+     * @param scale          scale factor
+     * @return bias but with probabilities scaled by scale factor
      */
     public static double getBiasScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
         double pred = 0;
@@ -87,9 +87,9 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs
-     * @param betasWithBeta0
-     * @return
+     * @param obs            data
+     * @param betasWithBeta0 beta weights
+     * @return prediction ratio
      */
     public static double getPredRatio(SparseObservation[] obs, double[] betasWithBeta0) {
         double clickWeight = 0;
@@ -109,10 +109,10 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs
-     * @param betasWithBeta0
-     * @param scale
-     * @return
+     * @param obs            data
+     * @param betasWithBeta0 beta weights
+     * @param scale          scale factor
+     * @return prediction ratio but with probabilities scaled by scale factor
      */
     public static double getPredRatioScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
         double clickWeight = 0;
