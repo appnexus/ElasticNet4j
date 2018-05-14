@@ -1,11 +1,11 @@
 package com.appnexus.opt.ml;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CoordinateDescentTrainerTest {
     private static final double SPARCE_PCT = 0.1;
@@ -16,7 +16,27 @@ public class CoordinateDescentTrainerTest {
     private static final long WEIGHT_SEED = 64;
 
     @Test
-    public void testGetWeightedCovarMartix() throws Exception {
+    public void testCalculateCj2() throws Exception {
+        int j = 2;
+        double[][] covarianceMatrix = new double[][] {{0.0, 0.0, 1.0, 2.0, 6.0, 8.0, 5.0, 12.0, 14.0, 8.0, 9.0},
+            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+            {1.0, 0.0, 0.0, 2.0, 3.0, 4.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+            {2.0, 0.0, 2.0, 0.0, 6.0, 8.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+            {6.0, 0.0, 3.0, 6.0, 0.0, 24.0, 15.0, 18.0, 21.0, 0.0, 0.0},
+            {8.0, 0.0, 4.0, 8.0, 24.0, 0.0, 20.0, 24.0, 28.0, 0.0, 0.0},
+            {5.0, 0.0, 0.0, 0.0, 15.0, 20.0, 0.0, 30.0, 35.0, 0.0, 0.0},
+            {12.0, 0.0, 0.0, 0.0, 18.0, 24.0, 30.0, 0.0, 84.0, 48.0, 54.0},
+            {14.0, 0.0, 0.0, 0.0, 21.0, 28.0, 35.0, 84.0, 0.0, 56.0, 63.0},
+            {8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 48.0, 56.0, 0.0, 72.0},
+            {9.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 54.0, 63.0, 72.0, 0.0}};
+        double[] currentBetasWithBeta0 = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+        double cj_1 = 12;
+        double totalWeights = 9;
+        Assert.assertEquals(CoordinateDescentTrainer.calculateCj2(j, covarianceMatrix, currentBetasWithBeta0, cj_1, totalWeights), 6.667, 0.01);
+    }
+
+    @Test
+    public void testGetWeightedCovarianceMartix() throws Exception {
         int[] xi1 = {1, 2, 3, 4};
         double[] xv1 = {1, 2, 3, 4};
         SparseObservation so1 = makeSparseObservation(xi1, xv1, 5, 10);
@@ -72,9 +92,12 @@ public class CoordinateDescentTrainerTest {
         int numOfUniqueObservations = 1000;
         int numOfFeatures = 200;
         int maxIterations = 1000;
-        SparseObservation[] obs = LRTestUtils.createTestData(numOfUniqueObservations, numOfFeatures, SPARCE_PCT, COL_SEED, BETA_SEED, DATA_SEED, WEIGHT_SEED);
+        SparseObservation[] obs = LRTestUtils
+            .createTestData(numOfUniqueObservations, numOfFeatures, SPARCE_PCT, COL_SEED, BETA_SEED, DATA_SEED,
+                WEIGHT_SEED);
         double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(obs, numOfFeatures);
-        LR lr = new LR(obs, numOfFeatures, null, alpha, lambdaGrid, lambdaScaleFactors, TOLERANCE, maxIterations, new CoordinateDescentTrainer());
+        LR lr = new LR(obs, numOfFeatures, null, alpha, lambdaGrid, lambdaScaleFactors, TOLERANCE, maxIterations,
+            new CoordinateDescentTrainer());
         // Calculated Betas
         List<LRResult> lrResultList = lr.calculateBetas(false);
 
@@ -95,7 +118,8 @@ public class CoordinateDescentTrainerTest {
     /**
      * HELPERS
      */
-    static SparseObservation makeSparseObservation(int[] xIndixes, double[] xValues, int y, int weight) throws Exception {
+    static SparseObservation makeSparseObservation(int[] xIndixes, double[] xValues, int y, int weight)
+        throws Exception {
         if (xIndixes == null || xValues == null || xIndixes.length != xValues.length) {
             throw new Exception("WTF Son !!!");
         }

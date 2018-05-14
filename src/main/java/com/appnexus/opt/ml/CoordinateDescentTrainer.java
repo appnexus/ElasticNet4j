@@ -121,8 +121,6 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             oldBetasWithBeta0 = Arrays.copyOf(newBetasWithBeta0, newBetasWithBeta0.length);
         } while (!LRUtil.hasConverged(maxAbsDifferencePct, tolerance) && iterations < maxIterations);
 
-        // if (iterations == maxIterations) System.out.println("Did not converge");
-
         long trainingTimeMillis = System.currentTimeMillis() - start;
         /*
           Create LRResult
@@ -143,14 +141,14 @@ public class CoordinateDescentTrainer implements IModelTrainer {
      * 
      * @param j : index of the 'j'th beta starting from beta0
      * @param weightedCovar : mi weighted covar matrix with diagonal terms zeroed out
-     * @param currentbetasWithBeta0
+     * @param currentBetasWithBeta0
      * @param cj_1 -> cj_1[0] += mi[i] * zi[i] / W; AND cj_1[j + 1] += mi[i] * xij * zi[i] / W; // c-terms first part
      * @param totalWeights -> sum of all weights / total trials
      */
-    private static double calculateCj2(int j, double[][] weightedCovar, double[] currentbetasWithBeta0, double cj_1, double totalWeights) {
+    static double calculateCj2(int j, double[][] weightedCovar, double[] currentBetasWithBeta0, double cj_1, double totalWeights) {
         double residual = 0;
-        for (int k = 0; k < currentbetasWithBeta0.length; ++k) {
-            residual += weightedCovar[j][k] * currentbetasWithBeta0[k];
+        for (int k = 0; k < currentBetasWithBeta0.length; ++k) {
+            residual += weightedCovar[j][k] * currentBetasWithBeta0[k];
         }
         return cj_1 - residual / totalWeights;
     }
