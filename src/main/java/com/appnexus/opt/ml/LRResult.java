@@ -16,7 +16,7 @@ public class LRResult implements Serializable {
     private long trainingTimeMillis;
 
     // MetaData
-    private List<LRIterationMetaData> metaDataList;
+    private List<LRIterationMetadata> metadataList;
 
     public double getAlpha() {
         return alpha;
@@ -58,12 +58,12 @@ public class LRResult implements Serializable {
         this.maxAbsDifferencePct = maxAbsDifferencePct;
     }
 
-    public List<LRIterationMetaData> getMetaDataList() {
-        return metaDataList;
+    public List<LRIterationMetadata> getMetaDataList() {
+        return metadataList;
     }
 
-    public void setMetaDataList(List<LRIterationMetaData> metaDataList) {
-        this.metaDataList = metaDataList;
+    public void setMetaDataList(List<LRIterationMetadata> metadataList) {
+        this.metadataList = metadataList;
     }
 
     public long getTrainingTimeMillis() {
@@ -103,8 +103,8 @@ public class LRResult implements Serializable {
         builder.append(this.trainingEntropy);
         builder.append(", trainingTimeMillis=");
         builder.append(this.trainingTimeMillis);
-        builder.append(", metaDataList=");
-        builder.append(this.metaDataList);
+        builder.append(", metadataList=");
+        builder.append(this.metadataList);
         builder.append("]");
         return builder.toString();
     }

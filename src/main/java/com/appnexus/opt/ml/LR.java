@@ -4,12 +4,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class LR {
-    private final SparseObservation[] observations; // contains x, y and weight. x does not hold the intercept feature
-    // for beta0
+    private final SparseObservation[] observations; // contains x, y and weight but does not contain entries for beta0
     private final int numOfFeatures;
     private final double totalSuccesses;
     private final double totalWeights;
-    private final double[] initialBetasWithBeta0; // beta0 in first index
+    private final double[] initialBetasWithBeta0; // contains beta0 in first index
     private final double alpha;
     private final double[] lambdaGrid;
     private final double[] lambdaScaleFactors;
@@ -33,8 +32,12 @@ public class LR {
         this.modelTrainer = modelTrainer;
     }
 
-    double[] getInitialBetasWithBeta0(double[] initBetasWithBeta0) {
-        double betasWithBeta0[] = initBetasWithBeta0;
+    /**
+     * @param initialBetasWithBeta0 initial betas with beta0
+     * @return initial betas with beta0 (either guessed or unchanged)
+     */
+    double[] getInitialBetasWithBeta0(double[] initialBetasWithBeta0) {
+        double betasWithBeta0[] = initialBetasWithBeta0;
         if (betasWithBeta0 == null) {
             betasWithBeta0 = new double[this.numOfFeatures + 1];
             betasWithBeta0[0] = guessInitialBetaZero();
@@ -42,13 +45,20 @@ public class LR {
         return betasWithBeta0;
     }
 
+    /**
+     * @return guessed initial beta0
+     */
     double guessInitialBetaZero() {
         double globalCtr = this.totalSuccesses / this.totalWeights;
         return Math.log(globalCtr / (1 - globalCtr));
     }
 
+    /**
+     * @param warmStart warm start flag
+     * @return beta results across lambda grid
+     */
     public LinkedList<LRResult> calculateBetas(boolean warmStart) {
-        LinkedList<LRResult> lrResultList = new LinkedList<LRResult>();
+        LinkedList<LRResult> lrResultList = new LinkedList<>();
         LRResult lrResult = null;
         for (double lambda : this.lambdaGrid) {
             double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ?
@@ -60,15 +70,24 @@ public class LR {
         return lrResultList;
     }
 
+    /**
+     * @param startBetasWithBeta0 initial betas
+     * @param lambda              lambda
+     * @return trained betas
+     */
     public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda) {
-        LRResult lrResult = this.modelTrainer
+        return this.modelTrainer
             .trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda,
                 this.lambdaScaleFactors, tolerance, maxIterations);
-        return lrResult;
     }
 
+    /*
+        helper methods
+     */
+
     /**
-     * HELPERS
+     * @param observations observations
+     * @return total success across observations
      */
     static double getTotalSuccesses(SparseObservation[] observations) {
         double totalSuccesses = 0;
@@ -78,6 +97,10 @@ public class LR {
         return totalSuccesses;
     }
 
+    /**
+     * @param observations observations
+     * @return total weights across observations
+     */
     static double getTotalWeights(SparseObservation[] observations) {
         double totalWeights = 0;
         for (SparseObservation obs : observations) {
