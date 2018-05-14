@@ -29,14 +29,16 @@ public class CoordinateDescentTrainerTest {
             {14.0, 0.0, 0.0, 0.0, 21.0, 28.0, 35.0, 84.0, 0.0, 56.0, 63.0},
             {8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 48.0, 56.0, 0.0, 72.0},
             {9.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 54.0, 63.0, 72.0, 0.0}};
-        double[] currentBetasWithBeta0 = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+        double[] currentBetasWithBeta0 = new double[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         double cj_1 = 12;
         double totalWeights = 9;
-        Assert.assertEquals(CoordinateDescentTrainer.calculateCj2(j, covarianceMatrix, currentBetasWithBeta0, cj_1, totalWeights), 6.667, 0.01);
+        Assert.assertEquals(
+            CoordinateDescentTrainer.calculateCj2(j, covarianceMatrix, currentBetasWithBeta0, cj_1, totalWeights),
+            6.667, 0.01);
     }
 
     @Test
-    public void testGetWeightedCovarianceMartix() throws Exception {
+    public void testGetWeightedCovarianceMatrix() throws Exception {
         int[] xi1 = {1, 2, 3, 4};
         double[] xv1 = {1, 2, 3, 4};
         SparseObservation so1 = makeSparseObservation(xi1, xv1, 5, 10);
@@ -115,17 +117,26 @@ public class CoordinateDescentTrainerTest {
         Assert.assertArrayEquals(testBetas, calculatedBetasUnregularized, 0.001);
     }
 
-    /**
-     * HELPERS
+    /*
+        helper methods
      */
-    static SparseObservation makeSparseObservation(int[] xIndixes, double[] xValues, int y, int weight)
+
+    /**
+     * @param xIndices x indices
+     * @param xValues  x values
+     * @param y        y
+     * @param weight   weight
+     * @return sparse observation
+     * @throws Exception
+     */
+    private static SparseObservation makeSparseObservation(int[] xIndices, double[] xValues, int y, int weight)
         throws Exception {
-        if (xIndixes == null || xValues == null || xIndixes.length != xValues.length) {
-            throw new Exception("WTF Son !!!");
+        if (xIndices == null || xValues == null || xIndices.length != xValues.length) {
+            throw new Exception("array lengths for x values and indices are unequal");
         }
         SparseArray x = new SparseArray();
-        for (int i = 0; i < xIndixes.length; ++i) {
-            x.set(xIndixes[i], xValues[i]);
+        for (int i = 0; i < xIndices.length; ++i) {
+            x.set(xIndices[i], xValues[i]);
         }
         return new SparseObservation(x, y, weight);
     }

@@ -10,6 +10,29 @@ import java.util.List;
 public class SparseArrayTest {
 
     @Test
+    public void testSize() {
+        SparseArray sparseArray = new SparseArray();
+        sparseArray.append(0, 1);
+        sparseArray.append(1, 2);
+        Assert.assertEquals(sparseArray.size(), 2);
+    }
+
+    @Test
+    public void testIsEmpty() {
+        SparseArray sparseArray = new SparseArray();
+        sparseArray.append(0, 1);
+        Assert.assertFalse(sparseArray.isEmpty());
+    }
+
+    @Test
+    public void testGet() {
+        SparseArray sparseArray = new SparseArray();
+        sparseArray.append(0, 1);
+        Assert.assertEquals(sparseArray.get(0), 1, 0.01);
+        Assert.assertEquals(sparseArray.get(1), 0.0, 0.01);
+    }
+
+    @Test
     public void testSet() {
         SparseArray sparseArray = new SparseArray();
         boolean setOne = sparseArray.set(1, 1);
