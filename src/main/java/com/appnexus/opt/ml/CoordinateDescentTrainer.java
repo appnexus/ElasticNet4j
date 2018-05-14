@@ -9,11 +9,12 @@ public class CoordinateDescentTrainer implements IModelTrainer {
     @Override
     public LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights, double[] oldBetasWithBeta0, double alpha, double lambda, double[] lambdaScaleFactors, double tolerance, int maxIterations) {
         LRResult lrResult = new LRResult();
-        ArrayList<LRIterationMetaData> metaDataList = new ArrayList<LRIterationMetaData>();
+        ArrayList<LRIterationMetaData> metaDataList = new ArrayList<>();
         lrResult.setMetaDataList(metaDataList);
         long start = System.currentTimeMillis();
-        /**
-         * Calculate mi (current weight), zi (current target) terms
+
+        /*
+          Calculate mi (current weight) and zi (current target) terms for each observation
          */
         double[] mi = new double[observations.length];
         double[] zi = new double[observations.length];
@@ -26,8 +27,8 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             zi[i] = betasDotXi + (observations[i].getY() - wi * prob) / mi[i];
         }
 
-        /**
-         * Calculate a-term and c-term parts
+        /*
+          Calculate a-term and c-term components for each beta weight
          */
         double[] aj = new double[oldBetasWithBeta0.length];
         double[] cj_1 = new double[oldBetasWithBeta0.length];
@@ -46,8 +47,8 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             cj_1[j] /= totalWeights;
         }
 
-        /**
-         * update and refine betas
+        /*
+          Update and refine betas until convergence
          */
         double[] scaledLambdaMulAlpha = new double[oldBetasWithBeta0.length - 1];
         for (int i = 0; i < scaledLambdaMulAlpha.length; ++i) {
@@ -60,11 +61,11 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         double[] newBetasWithBeta0 = null;
         double maxAbsDifferencePct = 0;
         double trainingEntropy = 0;
-        int iters = 0;
+        int iterations = 0;
 
         // Pre-processing
         // long preProcStart = System.currentTimeMillis();
-        double[][] weightedCovar = getWeightedCovarMartix(oldBetasWithBeta0.length, observations, mi);
+        double[][] weightedCovar = getWeightedCovarianceMatrix(oldBetasWithBeta0.length, observations, mi);
         // long preProcEnd = System.currentTimeMillis();
 
         do {
@@ -90,22 +91,22 @@ public class CoordinateDescentTrainer implements IModelTrainer {
                     }
                 }
             }
-            ++iters;
-            /**
-             * Calculate convergence error
+            ++iterations;
+            /*
+              Calculate convergence error
              */
             maxAbsDifferencePct = LRUtil.getMaxAbsDifferencePct(oldBetasWithBeta0, newBetasWithBeta0);
             trainingEntropy = LREvalUtil.getEntropy(observations, newBetasWithBeta0);
             long endLoop = System.currentTimeMillis();
 
-            /**
-             * Record Metrics
+            /*
+              Record Metrics
              */
             // Create MetaData
             LRIterationMetaData lrmd = new LRIterationMetaData();
             lrmd.setAlpha(alpha);
             lrmd.setLambda(lambda);
-            lrmd.setIteration(iters);
+            lrmd.setIteration(iterations);
             lrmd.setMaxAbsDifferencePct(maxAbsDifferencePct);
             lrmd.setTrainingEntropy(trainingEntropy);
             lrmd.setBetas(newBetasWithBeta0);
@@ -113,23 +114,23 @@ public class CoordinateDescentTrainer implements IModelTrainer {
 
             metaDataList.add(lrmd);
             // System.out.println(
-            // alpha + ", " + lambda + ", " + iters + ", " + maxAbsDifferencePct + ", " + (endLoop - startLoop));
-            /**
-             * Set New betas to old for next Iteration
+            // alpha + ", " + lambda + ", " + iterations + ", " + maxAbsDifferencePct + ", " + (endLoop - startLoop));
+            /*
+              Set New betas to old for next Iteration
              */
             oldBetasWithBeta0 = Arrays.copyOf(newBetasWithBeta0, newBetasWithBeta0.length);
-        } while (!LRUtil.hasConverged(maxAbsDifferencePct, tolerance) && iters < maxIterations);
+        } while (!LRUtil.hasConverged(maxAbsDifferencePct, tolerance) && iterations < maxIterations);
 
-        // if (iters == maxIterations) System.out.println("Did not converge");
+        // if (iterations == maxIterations) System.out.println("Did not converge");
 
         long trainingTimeMillis = System.currentTimeMillis() - start;
-        /**
-         * Create LRResult
+        /*
+          Create LRResult
          */
 
         lrResult.setAlpha(alpha);
         lrResult.setLambda(lambda);
-        lrResult.setIteration(iters);
+        lrResult.setIteration(iterations);
         lrResult.setMaxAbsDifferencePct(maxAbsDifferencePct);
         lrResult.setTrainingEntropy(trainingEntropy);
         lrResult.setBetasWithBeta0(newBetasWithBeta0);
@@ -155,14 +156,14 @@ public class CoordinateDescentTrainer implements IModelTrainer {
     }
 
     /**
-     * Calculate mi weighted covariance martix
+     * Calculate mi weighted covariance matrix
      * 
      * @param size Width / Height of the square matrix
      * @param observations Array of SparseObservations
      * @param mi Current Weights
      * @return
      */
-    static double[][] getWeightedCovarMartix(int size, SparseObservation[] observations, double[] mi) {
+    static double[][] getWeightedCovarianceMatrix(int size, SparseObservation[] observations, double[] mi) {
         double[][] weightedCovar = new double[size][size];
         for (int i = 0; i < observations.length; ++i) {
             for (SparseArray.Entry xRowj : observations[i].getX()) {

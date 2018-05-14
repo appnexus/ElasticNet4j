@@ -27,15 +27,15 @@ public class LREvalUtil {
      */
     public static double getEntropyNormalized(SparseObservation[] obs, double[] betasWithBeta0) {
         double error = 0;
-        double totalImps = 0;
+        double totalWeight = 0;
         for (SparseObservation o : obs) {
-            totalImps += o.getWeight();
+            totalWeight += o.getWeight();
             double prob = LRUtil.calcProb(o.getX(), betasWithBeta0);
             double pred = Math.min(1.0 - EPS, Math.max(EPS, prob));
             double errorObs = -1 * o.getY() * Math.log(pred) - (o.getWeight() - o.getY()) * Math.log(1.0 - pred);
             error = error + errorObs;
         }
-        return error / totalImps;
+        return error / totalWeight;
     }
 
     /**

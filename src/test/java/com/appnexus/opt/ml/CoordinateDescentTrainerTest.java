@@ -29,7 +29,7 @@ public class CoordinateDescentTrainerTest {
 
         SparseObservation[] soArr = {so1, so2, so3};
         double[] mi = {1, 1, 1};
-        double[][] weightedCovarMatrix = CoordinateDescentTrainer.getWeightedCovarMartix(11, soArr, mi);
+        double[][] weightedCovarMatrix = CoordinateDescentTrainer.getWeightedCovarianceMatrix(11, soArr, mi);
 
         double[] expectedCol0 = {0.0, 0.0, 1.0, 2.0, 6.0, 8.0, 5.0, 12.0, 14.0, 8.0, 9.0};
         double[] expectedCol1 = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};

@@ -102,16 +102,16 @@ public class LRUtil {
      */
     public static double[] generateLambdaScaleFactors(SparseObservation[] trainingObsArr, int featureVectorLen) {
         double[] lambdaScaleFactors = new double[featureVectorLen];
-        double imps = 0;
+        double totalWeight = 0;
         for (SparseObservation trainingObs : trainingObsArr) {
-            imps += trainingObs.getWeight();
+            totalWeight += trainingObs.getWeight();
             for (SparseArray.Entry feature : trainingObs.getX()) {
                 lambdaScaleFactors[feature.i] += trainingObs.getY();
             }
         }
-        // TODO think about 1/imps vs ?/imps
+        // TODO think about 1/totalWeight vs ?/totalWeight
         for (int i = 0; i < lambdaScaleFactors.length; ++i) {
-            lambdaScaleFactors[i] = lambdaScaleFactors[i] == 0 ? 1 / imps : lambdaScaleFactors[i] / imps;
+            lambdaScaleFactors[i] = lambdaScaleFactors[i] == 0 ? 1 / totalWeight : lambdaScaleFactors[i] / totalWeight;
         }
         return lambdaScaleFactors;
     }
