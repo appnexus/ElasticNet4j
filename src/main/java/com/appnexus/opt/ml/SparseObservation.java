@@ -28,4 +28,14 @@ public class SparseObservation {
     public double getY() {
         return this.y;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("SparseObservation{");
+        sb.append("x=").append(x);
+        sb.append(", y=").append(y);
+        sb.append(", weight=").append(weight);
+        sb.append('}');
+        return sb.toString();
+    }
 }

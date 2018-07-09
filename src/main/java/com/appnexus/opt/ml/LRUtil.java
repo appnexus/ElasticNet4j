@@ -2,18 +2,36 @@ package com.appnexus.opt.ml;
 
 public class LRUtil {
 
+    /**
+     * @param xRow           data
+     * @param betasWithBeta0 beta weights
+     * @return probability(Xi)
+     */
     public static double calcProb(SparseArray xRow, double[] betasWithBeta0) {
         return calcProb(betasDotXi(xRow, betasWithBeta0));
     }
 
+    /**
+     * @param betasDotXi dot product of beta weights and data
+     * @return probability(Xi)
+     */
     public static double calcProb(double betasDotXi) {
         return expit(betasDotXi);
     }
 
+    /**
+     * @param z input
+     * @return inverse logit of z
+     */
     public static double expit(double z) {
         return 1.0 / (1.0 + Math.exp(-z));
     }
 
+    /**
+     * @param xRow           data
+     * @param betasWithBeta0 beta weights
+     * @return dot product of data and beta weights
+     */
     public static double betasDotXi(SparseArray xRow, double[] betasWithBeta0) {
         double betasDotXi = betasWithBeta0[0];
         for (SparseArray.Entry entry : xRow) {
@@ -35,9 +53,8 @@ public class LRUtil {
     }
 
     /**
-     * 
-     * @param oldBetas Betas from previous iteration
-     * @param newBetas Betas from latest iteration
+     * @param oldBetas  Betas from previous iteration
+     * @param newBetas  Betas from latest iteration
      * @param tolerance
      * @return
      */
@@ -46,7 +63,6 @@ public class LRUtil {
     }
 
     /**
-     * 
      * @param maxAbsDifferencePct Max absolute difference percentage between old and new betas
      * @param tolerance
      * @return
@@ -57,7 +73,7 @@ public class LRUtil {
 
     /**
      * Get Max Absolute % difference between oldBetas[j] and newBetas[j] across all values of j
-     * 
+     *
      * @param oldBetas
      * @param newBetas
      * @return
@@ -79,23 +95,23 @@ public class LRUtil {
 
     /**
      * Generate Scale Factors for scaling lambda for each beta[j]
-     * 
+     *
      * @param trainingObsArr
      * @param featureVectorLen
      * @return
      */
     public static double[] generateLambdaScaleFactors(SparseObservation[] trainingObsArr, int featureVectorLen) {
         double[] lambdaScaleFactors = new double[featureVectorLen];
-        double imps = 0;
+        double totalWeight = 0;
         for (SparseObservation trainingObs : trainingObsArr) {
-            imps += trainingObs.getWeight();
+            totalWeight += trainingObs.getWeight();
             for (SparseArray.Entry feature : trainingObs.getX()) {
                 lambdaScaleFactors[feature.i] += trainingObs.getY();
             }
         }
-        // TODO think about 1/imps vs ?/imps
+        // TODO think about 1/totalWeight vs ?/totalWeight
         for (int i = 0; i < lambdaScaleFactors.length; ++i) {
-            lambdaScaleFactors[i] = lambdaScaleFactors[i] == 0 ? 1 / imps : lambdaScaleFactors[i] / imps;
+            lambdaScaleFactors[i] = lambdaScaleFactors[i] == 0 ? 1 / totalWeight : lambdaScaleFactors[i] / totalWeight;
         }
         return lambdaScaleFactors;
     }

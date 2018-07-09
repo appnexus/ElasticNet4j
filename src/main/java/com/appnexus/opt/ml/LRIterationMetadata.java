@@ -2,7 +2,7 @@ package com.appnexus.opt.ml;
 
 import java.util.Arrays;
 
-public class LRIterationMetaData {
+public class LRIterationMetadata {
     private double alpha;
     private double lambda;
     private int iteration;
@@ -70,7 +70,7 @@ public class LRIterationMetaData {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("LRIterationMetaData [alpha=");
+        builder.append("LRIterationMetadata [alpha=");
         builder.append(this.alpha);
         builder.append(", lambda=");
         builder.append(this.lambda);

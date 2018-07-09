@@ -4,12 +4,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class LR {
-    private final SparseObservation[] observations; // contains x, y and weight. x does not hold the intercept feature
-                                                    // for beta0
+    private final SparseObservation[] observations; // contains x, y and weight but does not contain entries for beta0
     private final int numOfFeatures;
     private final double totalSuccesses;
     private final double totalWeights;
-    private final double[] initialBetasWithBeta0; // beta0 in first index
+    private final double[] initialBetasWithBeta0; // contains beta0 in first index
     private final double alpha;
     private final double[] lambdaGrid;
     private final double[] lambdaScaleFactors;
@@ -17,16 +16,13 @@ public class LR {
     private final int maxIterations;
     private final IModelTrainer modelTrainer;
 
-    public LR(SparseObservation[] observations, int numOfFeatures, double[] initialBetasWithBeta0, double alpha, double[] lambdaGrid, double[] lambdaScaleFactors, double tolerance, int maxIterations, IModelTrainer modelTrainer) {
+    public LR(SparseObservation[] observations, int numOfFeatures, double[] initialBetasWithBeta0, double alpha,
+        double[] lambdaGrid, double[] lambdaScaleFactors, double tolerance, int maxIterations,
+        IModelTrainer modelTrainer) {
         this.observations = observations;
         this.numOfFeatures = numOfFeatures;
         this.totalSuccesses = getTotalSuccesses(this.observations);
-        // System.out.println("TOTAL SUCCESSES -> " + this.totalSuccesses); // TODO --
-        // remove
-        // System.out.println("TOTAL FAILURES -> " +
-        // getTotalFailure(this.observations)); // TODO -- remove
         this.totalWeights = getTotalWeights(this.observations);
-        // System.out.println("TOTAL WEIGHTS -> " + this.totalWeights);// TODO -- remove
         this.initialBetasWithBeta0 = getInitialBetasWithBeta0(initialBetasWithBeta0);
         this.alpha = alpha;
         this.lambdaGrid = lambdaGrid;
@@ -36,8 +32,12 @@ public class LR {
         this.modelTrainer = modelTrainer;
     }
 
-    private double[] getInitialBetasWithBeta0(double[] initBetasWithBeta0) {
-        double betasWithBeta0[] = initBetasWithBeta0;
+    /**
+     * @param initialBetasWithBeta0 initial betas with beta0
+     * @return initial betas with beta0 (either guessed or unchanged)
+     */
+    double[] getInitialBetasWithBeta0(double[] initialBetasWithBeta0) {
+        double betasWithBeta0[] = initialBetasWithBeta0;
         if (betasWithBeta0 == null) {
             betasWithBeta0 = new double[this.numOfFeatures + 1];
             betasWithBeta0[0] = guessInitialBetaZero();
@@ -45,31 +45,51 @@ public class LR {
         return betasWithBeta0;
     }
 
-    private double guessInitialBetaZero() {
+    /**
+     * @return guessed initial beta0
+     */
+    double guessInitialBetaZero() {
         double globalCtr = this.totalSuccesses / this.totalWeights;
         return Math.log(globalCtr / (1 - globalCtr));
     }
 
+    /**
+     * @param warmStart warm start flag
+     * @return beta results across lambda grid
+     */
     public LinkedList<LRResult> calculateBetas(boolean warmStart) {
-        LinkedList<LRResult> lrResultList = new LinkedList<LRResult>();
+        LinkedList<LRResult> lrResultList = new LinkedList<>();
         LRResult lrResult = null;
         for (double lambda : this.lambdaGrid) {
-            double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ? Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length) : Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
+            double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ?
+                Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length) :
+                Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
             lrResult = calculateBetas(startBetasWithBeta0, lambda);
             lrResultList.add(lrResult);
         }
         return lrResultList;
     }
 
+    /**
+     * @param startBetasWithBeta0 initial betas
+     * @param lambda              lambda
+     * @return trained betas
+     */
     public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda) {
-        LRResult lrResult = this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda, this.lambdaScaleFactors, tolerance, maxIterations);
-        return lrResult;
+        return this.modelTrainer
+            .trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda,
+                this.lambdaScaleFactors, tolerance, maxIterations);
     }
 
-    /**
-     * HELPERS
+    /*
+        helper methods
      */
-    private static double getTotalSuccesses(SparseObservation[] observations) {
+
+    /**
+     * @param observations observations
+     * @return total success across observations
+     */
+    static double getTotalSuccesses(SparseObservation[] observations) {
         double totalSuccesses = 0;
         for (SparseObservation obs : observations) {
             totalSuccesses += obs.getY();
@@ -77,7 +97,11 @@ public class LR {
         return totalSuccesses;
     }
 
-    private static double getTotalWeights(SparseObservation[] observations) {
+    /**
+     * @param observations observations
+     * @return total weights across observations
+     */
+    static double getTotalWeights(SparseObservation[] observations) {
         double totalWeights = 0;
         for (SparseObservation obs : observations) {
             totalWeights += obs.getWeight();
