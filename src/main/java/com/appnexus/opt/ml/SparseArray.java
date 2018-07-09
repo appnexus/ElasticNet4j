@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * This class provides a simple implementation of a sparsely populated array of elements. The SparseArray is useful for holding sparse large but sparsely populated feature vectors while keeping computation time low
+ */
 public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
     private static final long serialVersionUID = 1L;

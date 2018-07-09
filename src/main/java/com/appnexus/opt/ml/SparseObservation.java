@@ -1,5 +1,8 @@
 package com.appnexus.opt.ml;
 
+/**
+ * This class implements data structure representing a sparsely populated feature vector with its weight
+ */
 public class SparseObservation {
     private final SparseArray x;
     private final double y;
