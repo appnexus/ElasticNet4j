@@ -19,6 +19,15 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
             this.i = i;
             this.x = x;
         }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("Entry{");
+            sb.append("i=").append(i);
+            sb.append(", x=").append(x);
+            sb.append('}');
+            return sb.toString();
+        }
     }
 
     private List<Entry> array;
@@ -111,4 +120,11 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
         }
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("SparseArray{");
+        sb.append("array=").append(array);
+        sb.append('}');
+        return sb.toString();
+    }
 }
