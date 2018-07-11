@@ -26,7 +26,16 @@ public class Utils {
         return betas;
     }
 
-    // TODO, VVAL-219: doc string
+    /**
+     * @param numOfObservations number of observations
+     * @param numOfFeatures     number of features
+     * @param sparsePct         sparse percentage (determines number of nonzero features)
+     * @param colSeed           column seed
+     * @param betaSeed          beta seed
+     * @param dataSeed          data seed
+     * @param weightSeed        weight seed
+     * @return generated test data
+     */
     public static SparseObservation[] createTestData(int numOfObservations, int numOfFeatures, double sparsePct,
         long colSeed, long betaSeed, long dataSeed, long weightSeed) {
 
@@ -48,6 +57,7 @@ public class Utils {
         // make betas
         double[] betasWithBeta0 = createBetas(numOfFeatures + 1, betaSeed);
 
+        // make observation
         Random weightRn = new Random(weightSeed);
         SparseObservation[] obs = new SparseObservation[numOfObservations];
         for (int i = 0; i < numOfObservations; ++i) {
