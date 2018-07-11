@@ -1,6 +1,5 @@
 package com.appnexus.opt.examples;
 
-import com.appnexus.opt.ml.LREvalUtil;
 import com.appnexus.opt.ml.LRUtil;
 import com.appnexus.opt.ml.SparseArray;
 import com.appnexus.opt.ml.SparseObservation;
@@ -9,16 +8,27 @@ import java.util.Random;
 
 public class Utils {
 
+    private static final double DEFAULT_BETA_0 = -3;
+    private static final double BETA_MAX = 1.5;
+
+    /**
+     * @param numOfBetasWithBeta0 number of betas with beta 0
+     * @param betaSeed            beta seed
+     * @return beta array
+     */
     public static double[] createBetas(int numOfBetasWithBeta0, long betaSeed) {
-        // TODO, VVAL-219: fill in
         Random rn = new Random(betaSeed);
         double[] betas = new double[numOfBetasWithBeta0];
+        betas[0] = DEFAULT_BETA_0;
+        for (int i = 1; i < numOfBetasWithBeta0; ++i) {
+            betas[i] = (rn.nextDouble() - 0.5D) + BETA_MAX;
+        }
         return betas;
     }
 
-    // TODO, VVAL-219: complete
-    public static SparseObservation[] createTestData(int numOfObservations, int numOfFeatures, double sparsePct, long colSeed,
-        long betaSeed, long dataSeed, long weightSeed) {
+    // TODO, VVAL-219: doc string
+    public static SparseObservation[] createTestData(int numOfObservations, int numOfFeatures, double sparsePct,
+        long colSeed, long betaSeed, long dataSeed, long weightSeed) {
 
         // feature vectors
         SparseArray[] featureVectors = new SparseArray[numOfObservations];
@@ -44,15 +54,19 @@ public class Utils {
             int weight = 50 + weightRn.nextInt(50);
             double y = weight * LRUtil.expit(LRUtil.betasDotXi(featureVectors[i], betasWithBeta0));
             obs[i] = new SparseObservation(featureVectors[i], y, weight);
-            // TODO, VVAL-219: remove eventually
-            System.out.println(obs[i]);
         }
         return obs;
     }
 
-    // TODO, VVAL-219: remove eventually
+    /*
+        TEST CODE
+     */
+
     public static void main(String[] args) {
-        createTestData(10, 5, 0.5, 99, 99, 99, 99);
+        SparseObservation[] testObservations = createTestData(10, 5, 0.5, 99, 99, 99, 99);
+        for (SparseObservation observation : testObservations) {
+            System.out.println(observation);
+        }
     }
 
 }
