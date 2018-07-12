@@ -33,8 +33,9 @@ public class LRTest {
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = LRUtilTest.makeTjSparseObservation(xi3, xv3, 0, 10);
         SparseObservation[] soArr = {so1, so2, so3};
-        LR lr = new LR(soArr, 10, new double[]{}, 0, new double[]{}, new double[]{}, 0, 0, new CoordinateDescentTrainer());
-        double[] actualBetas = new double[]{-0.6931, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        LR lr = new LR(soArr, 10, new double[] {}, 0, new double[] {}, new double[] {}, 0, 0,
+            new CoordinateDescentTrainer());
+        double[] actualBetas = new double[] {-0.6931, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         Assert.assertArrayEquals(lr.getInitialBetasWithBeta0(null), actualBetas, 0.01);
 
     }
@@ -51,7 +52,8 @@ public class LRTest {
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = LRUtilTest.makeTjSparseObservation(xi3, xv3, 0, 10);
         SparseObservation[] soArr = {so1, so2, so3};
-        LR lr = new LR(soArr, 11, new double[]{}, 0, new double[]{}, new double[]{}, 0, 0, new CoordinateDescentTrainer());
+        LR lr = new LR(soArr, 11, new double[] {}, 0, new double[] {}, new double[] {}, 0, 0,
+            new CoordinateDescentTrainer());
         Assert.assertEquals(lr.guessInitialBetaZero(), -0.6931, 0.01);
     }
 

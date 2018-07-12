@@ -24,6 +24,21 @@ public class LRUtilTest {
     public static final double MT_LAMBDA_GRID_START = -5;
     public static final double MT_LAMBDA_GRID_END = 5;
 
+    /**
+     * HELPERS
+     */
+    static SparseObservation makeTjSparseObservation(int[] xIndixes, double[] xValues, int y, int weight)
+        throws Exception {
+        if (xIndixes == null || xValues == null || xIndixes.length != xValues.length) {
+            throw new Exception("WTF Son !!!");
+        }
+        SparseArray x = new SparseArray();
+        for (int i = 0; i < xIndixes.length; ++i) {
+            x.set(xIndixes[i], xValues[i]);
+        }
+        return new SparseObservation(x, y, weight);
+    }
+
     @Test
     public void testCalcProbWithSparseArrayAndBetas() throws Exception {
         int[] xi1 = {1, 2, 3, 4};
@@ -134,20 +149,5 @@ public class LRUtilTest {
     @Test
     public void testGetLambdaGridNull() {
         Assert.assertArrayEquals(LRUtil.getLambdaGrid(0, 0, 0), null, 1e-10);
-    }
-
-    /**
-     * HELPERS
-     */
-    static SparseObservation makeTjSparseObservation(int[] xIndixes, double[] xValues, int y, int weight)
-        throws Exception {
-        if (xIndixes == null || xValues == null || xIndixes.length != xValues.length) {
-            throw new Exception("WTF Son !!!");
-        }
-        SparseArray x = new SparseArray();
-        for (int i = 0; i < xIndixes.length; ++i) {
-            x.set(xIndixes[i], xValues[i]);
-        }
-        return new SparseObservation(x, y, weight);
     }
 }

@@ -81,7 +81,7 @@ public class SparseArrayTest {
 
     private void testSparseArrayEquality(Iterator<SparseArray.Entry> itSparseArray,
         Iterator<SparseArray.Entry> itActualEntries) {
-        while(itSparseArray.hasNext()) {
+        while (itSparseArray.hasNext()) {
             SparseArray.Entry eSparseArray = itSparseArray.next();
             SparseArray.Entry eActualEntries = itActualEntries.next();
             Assert.assertEquals(eSparseArray.i, eActualEntries.i);

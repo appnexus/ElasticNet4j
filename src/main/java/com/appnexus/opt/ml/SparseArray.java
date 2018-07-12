@@ -27,29 +27,8 @@ import java.util.List;
 public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    public static class Entry implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        public int i;
-        public double x;
-
-        public Entry(int i, double x) {
-            this.i = i;
-            this.x = x;
-        }
-
-        @Override
-        public String toString() {
-            final StringBuilder sb = new StringBuilder("Entry{");
-            sb.append("i=").append(i);
-            sb.append(", x=").append(x);
-            sb.append('}');
-            return sb.toString();
-        }
-    }
-
     private List<Entry> array;
+
 
     public SparseArray() {
         this(10);
@@ -84,7 +63,7 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
     /**
      * Sets or add an entry.
-     * 
+     *
      * @param i the index of entry.
      * @param x the value of entry.
      * @return true if a new entry added, false if an existing entry updated.
@@ -113,7 +92,7 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
     /**
      * Append an entry to the array, optimizing for the case where the index is greater than all existing indices in the array.
-     * 
+     *
      * @param i the index of entry.
      * @param x the value of entry.
      */
@@ -125,7 +104,7 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
 
     /**
      * Removes an entry.
-     * 
+     *
      * @param i the index of entry.
      */
     public void remove(int i) {
@@ -136,6 +115,28 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
                 it.remove();
                 break;
             }
+        }
+    }
+
+
+    public static class Entry implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        public int i;
+        public double x;
+
+        public Entry(int i, double x) {
+            this.i = i;
+            this.x = x;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("Entry{");
+            sb.append("i=").append(i);
+            sb.append(", x=").append(x);
+            sb.append('}');
+            return sb.toString();
         }
     }
 
