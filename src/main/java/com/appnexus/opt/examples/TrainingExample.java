@@ -23,13 +23,13 @@ import java.util.List;
 
 public class TrainingExample {
 
-    private static final long COL_SEED = 8;
-    private static final long BETA_SEED = 16;
-    private static final long DATA_SEED = 32;
-    private static final long WEIGHT_SEED = 64;
-    private static final double SPARSE_PCT = 0.1;
-    private static final double TOLERANCE = 1e-6;
-    private static final double TRAINING_PCT = 0.9;
+    private static final long COL_SEED = 8; // random seed for column (feature) generation
+    private static final long BETA_SEED = 16; // random seed for beta generation
+    private static final long DATA_SEED = 32; // random seed for data (feature value) generation
+    private static final long WEIGHT_SEED = 64; // random seed for observation weight generation
+    private static final double SPARSE_PCT = 0.1; // desired percentage of nonzero features
+    private static final double TOLERANCE = 1e-6; // tolerance of training algorithm
+    private static final double TRAINING_PCT = 0.9; // desired percentage of data for training algorithm
 
     /**
      * Example of how to use our logistic regression library for training and testing data
