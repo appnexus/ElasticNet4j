@@ -32,28 +32,34 @@ public class TrainingExample {
     private static final double TRAINING_PCT = 0.9;
 
     /**
-     * runs through an example of logistic regression
+     * Example of how to use our logistic regression library for training and testing data
      */
-    public static void runLR() {
-        // sample parameters
-        double alpha = 1.0; // sample elastic net parameter
-        int maxIterations = 1000;
-        int numOfObservations = 1000;
-        int numOfFeatures = 200;
-        // generate lambda penalties and test data
-        double[] lambdaGrid = LRUtil.getLambdaGrid(1, 1, 17);
+    public static void runLogisticRegressionExample() {
+        /* Below is metadata about the data going into the algorithm as well as metadata for the training algorithm itself. */
+        int numOfObservations = 1000; // total desired number of data observations
+        int numOfFeatures = 200; // total desired number of features
+        double alpha = 1.0; // elastic net parameter for training
+        int maxIterations = 1000; // maximum number of iterations for training
+        int lambdaSize = 1; // number of lambda tuning parameters for training
+        int lambdaStart = 1; // start for lambda tuning parameters for training
+        int lambdaEnd = 17; // end for lambda tuning parameters for training
+        /* Generate observations using the metadata above. */
         SparseObservation[] observations = Utils
             .createTestData(numOfObservations, numOfFeatures, SPARSE_PCT, COL_SEED, BETA_SEED, DATA_SEED, WEIGHT_SEED);
-        // split into train and test
+        /* Generate a grid of lambda tuning parameters using the metadata above. */
+        double[] lambdaGrid = LRUtil.getLambdaGrid(lambdaSize, lambdaStart, lambdaEnd);
+        /* Use TRAINING_PCT percentage of data as training data for our algorithm. The remainder is data to test our algorithm. */
         int splitIdx = (int) (TRAINING_PCT * observations.length);
         SparseObservation[] trainObservations = Arrays.copyOfRange(observations, 0, splitIdx);
         SparseObservation[] testObservations = Arrays.copyOfRange(observations, splitIdx, observations.length);
+        /* Generate lambda scale factors for the training algorithm. */
         double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(trainObservations, numOfFeatures);
+        /* Generate an initial beta weight vector that will be updated by the training algorithm per iteration. */
         double[] initialBetas = Utils.createBetas(numOfFeatures + 1, BETA_SEED);
-        // train
+        /* Train! */
         LR lr = new LR(trainObservations, numOfFeatures, initialBetas, alpha, lambdaGrid, lambdaScaleFactors, TOLERANCE,
             maxIterations, new CoordinateDescentTrainer());
-        // training results and entropy on test data
+        /* Visualize the results of the training algorithm and calculate entropy for the test data. */
         List<LRResult> lrResults = lr.calculateBetas(false);
         for (LRResult lrResult : lrResults) {
             System.out.println("LR result: " + lrResult);
@@ -69,7 +75,7 @@ public class TrainingExample {
      */
 
     public static void main(String[] args) {
-        runLR();
+        runLogisticRegressionExample();
     }
 
 }
