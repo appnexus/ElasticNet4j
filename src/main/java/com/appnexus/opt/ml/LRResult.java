@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This object represents the trained LR model for a specific set of training parameters. It also holds a list of {@link LRIterationMetadata} representing the intermediate results of each iteration during the training process
+ */
 public class LRResult implements Serializable {
     private static final long serialVersionUID = 4817212848479794019L;
 

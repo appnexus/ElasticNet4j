@@ -2,6 +2,9 @@ package com.appnexus.opt.ml;
 
 import java.util.Arrays;
 
+/**
+ * This object holds the intermediate results and metadata related to a specific iteration in the model training process
+ */
 public class LRIterationMetadata {
     private double alpha;
     private double lambda;

@@ -1,11 +1,14 @@
 package com.appnexus.opt.ml;
 
+/**
+ * This utility class provides static functions to evaluate error rates or performance of a model on the data set
+ */
 public class LREvalUtil {
 
     private static final double EPS = 1e-15;
 
     /**
-     * @param obs            data
+     * @param obs data
      * @param betasWithBeta0 beta weights
      * @return cross entropy of p from data vs true distribution
      */
@@ -21,7 +24,7 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs            data
+     * @param obs data
      * @param betasWithBeta0 beta weights
      * @return cross entropy but normalized by number of impressions
      */
@@ -39,9 +42,9 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs            data
+     * @param obs data
      * @param betasWithBeta0 beta weights
-     * @param scale          scale factor
+     * @param scale scale factor
      * @return cross entropy but with probabilities scaled by scale factor
      */
     public static double getEntropyScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
@@ -56,7 +59,7 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs            data
+     * @param obs data
      * @param betasWithBeta0 beta weights
      * @return bias = (number of predicted y - number of actual y) / (number of actual y)
      */
@@ -71,9 +74,9 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs            data
+     * @param obs data
      * @param betasWithBeta0 beta weights
-     * @param scale          scale factor
+     * @param scale scale factor
      * @return bias but with probabilities scaled by scale factor
      */
     public static double getBiasScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
@@ -87,7 +90,7 @@ public class LREvalUtil {
     }
 
     /**
-     * @param obs            data
+     * @param obs data
      * @param betasWithBeta0 beta weights
      * @return prediction ratio
      */
@@ -103,15 +106,13 @@ public class LREvalUtil {
             nonYWeight = nonYWeight + o.getWeight() - o.getY();
             nonYProb = nonYProb + ((o.getWeight() - o.getY()) * prob);
         }
-        return (yWeight == 0 || nonYProb == 0) ?
-            0 :
-            (yProb / yWeight) / (nonYProb / nonYWeight);
+        return (yWeight == 0 || nonYProb == 0) ? 0 : (yProb / yWeight) / (nonYProb / nonYWeight);
     }
 
     /**
-     * @param obs            data
+     * @param obs data
      * @param betasWithBeta0 beta weights
-     * @param scale          scale factor
+     * @param scale scale factor
      * @return prediction ratio but with probabilities scaled by scale factor
      */
     public static double getPredRatioScaled(SparseObservation[] obs, double[] betasWithBeta0, double scale) {
@@ -126,9 +127,7 @@ public class LREvalUtil {
             nonYWeight = nonYWeight + o.getWeight() - o.getY();
             nonYProb = nonYProb + ((o.getWeight() - o.getY()) * prob);
         }
-        return (yWeight == 0 || nonYProb == 0) ?
-            0 :
-            (yProb / yWeight) / (nonYProb / nonYWeight);
+        return (yWeight == 0 || nonYProb == 0) ? 0 : (yProb / yWeight) / (nonYProb / nonYWeight);
     }
 
 }

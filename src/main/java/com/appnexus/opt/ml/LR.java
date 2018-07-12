@@ -3,6 +3,9 @@ package com.appnexus.opt.ml;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+/**
+ * This class is the entry point into using the LR training functionality
+ */
 public class LR {
     private final SparseObservation[] observations; // contains x, y and weight but does not contain entries for beta0
     private final int numOfFeatures;
@@ -61,9 +64,9 @@ public class LR {
         LinkedList<LRResult> lrResultList = new LinkedList<>();
         LRResult lrResult = null;
         for (double lambda : this.lambdaGrid) {
-            double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ?
-                Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length) :
-                Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
+            double[] startBetasWithBeta0 = ((warmStart && lrResult != null)
+                ? Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length)
+                : Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
             lrResult = calculateBetas(startBetasWithBeta0, lambda);
             lrResultList.add(lrResult);
         }
@@ -72,17 +75,16 @@ public class LR {
 
     /**
      * @param startBetasWithBeta0 initial betas
-     * @param lambda              lambda
+     * @param lambda lambda
      * @return trained betas
      */
     public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda) {
-        return this.modelTrainer
-            .trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda,
-                this.lambdaScaleFactors, tolerance, maxIterations);
+        return this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0,
+            this.alpha, lambda, this.lambdaScaleFactors, tolerance, maxIterations);
     }
 
     /*
-        helper methods
+     * helper methods
      */
 
     /**
