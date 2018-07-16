@@ -1,35 +1,30 @@
 /*
- *    Copyright 2018 APPNEXUS INC
+ * Copyright 2018 APPNEXUS INC
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
  */
 
 package com.appnexus.opt.examples;
+
+import java.util.Random;
 
 import com.appnexus.opt.ml.LRUtil;
 import com.appnexus.opt.ml.SparseArray;
 import com.appnexus.opt.ml.SparseObservation;
 
-import java.util.Random;
-
-public class Utils {
+public class ExampleUtils {
 
     private static final double DEFAULT_BETA_0 = -3;
     private static final double BETA_MAX = 1.5;
 
     /**
      * @param numOfBetasWithBeta0 number of betas with beta 0
-     * @param betaSeed            beta seed
+     * @param betaSeed beta seed
      * @return beta array
      */
     public static double[] createBetas(int numOfBetasWithBeta0, long betaSeed) {
@@ -44,12 +39,12 @@ public class Utils {
 
     /**
      * @param numOfObservations number of observations
-     * @param numOfFeatures     number of features
-     * @param sparsePct         sparse percentage (determines number of nonzero features)
-     * @param colSeed           column seed
-     * @param betaSeed          beta seed
-     * @param dataSeed          data seed
-     * @param weightSeed        weight seed
+     * @param numOfFeatures number of features
+     * @param sparsePct sparse percentage (determines number of nonzero features)
+     * @param colSeed column seed
+     * @param betaSeed beta seed
+     * @param dataSeed data seed
+     * @param weightSeed weight seed
      * @return generated test data
      */
     public static SparseObservation[] createTestData(int numOfObservations, int numOfFeatures, double sparsePct,
@@ -85,7 +80,7 @@ public class Utils {
     }
 
     /*
-        TEST CODE
+     * TEST CODE
      */
 
     public static void main(String[] args) {

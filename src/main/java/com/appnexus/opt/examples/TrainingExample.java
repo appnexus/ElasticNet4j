@@ -44,7 +44,7 @@ public class TrainingExample {
         int lambdaStart = 1; // start for lambda tuning parameters for training
         int lambdaEnd = 17; // end for lambda tuning parameters for training
         /* Generate observations using the metadata above. */
-        SparseObservation[] observations = Utils
+        SparseObservation[] observations = ExampleUtils
             .createTestData(numOfObservations, numOfFeatures, SPARSE_PCT, COL_SEED, BETA_SEED, DATA_SEED, WEIGHT_SEED);
         /* Generate a grid of lambda tuning parameters using the metadata above. */
         double[] lambdaGrid = LRUtil.getLambdaGrid(lambdaSize, lambdaStart, lambdaEnd);
@@ -55,7 +55,7 @@ public class TrainingExample {
         /* Generate lambda scale factors for the training algorithm. */
         double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(trainObservations, numOfFeatures);
         /* Generate an initial beta weight vector that will be updated by the training algorithm per iteration. */
-        double[] initialBetas = Utils.createBetas(numOfFeatures + 1, BETA_SEED);
+        double[] initialBetas = ExampleUtils.createBetas(numOfFeatures + 1, BETA_SEED);
         /* Train! */
         LR lr = new LR(trainObservations, numOfFeatures, initialBetas, alpha, lambdaGrid, lambdaScaleFactors, TOLERANCE,
             maxIterations, new CoordinateDescentTrainer());
