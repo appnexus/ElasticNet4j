@@ -31,6 +31,26 @@ public class CoordinateDescentTrainerTest {
     private static final long DATA_SEED = 32;
     private static final long WEIGHT_SEED = 64;
 
+    /**
+     * @param xIndices x indices
+     * @param xValues  x values
+     * @param y        y
+     * @param weight   weight
+     * @return sparse observation
+     * @throws Exception
+     */
+    private static SparseObservation makeSparseObservation(int[] xIndices, double[] xValues, int y, int weight)
+        throws Exception {
+        if (xIndices == null || xValues == null || xIndices.length != xValues.length) {
+            throw new Exception("array lengths for x values and indices are unequal");
+        }
+        SparseArray x = new SparseArray();
+        for (int i = 0; i < xIndices.length; ++i) {
+            x.set(xIndices[i], xValues[i]);
+        }
+        return new SparseObservation(x, y, weight);
+    }
+
     @Test
     public void testCalculateCj2() throws Exception {
         int j = 2;
@@ -99,6 +119,10 @@ public class CoordinateDescentTrainerTest {
 
     }
 
+    /*
+        helper methods
+     */
+
     /**
      * Test training on randomly generated data while assuming a set of Betas. Compare trained Betas (for lambda == 0) with the assumed set of betas
      */
@@ -131,29 +155,5 @@ public class CoordinateDescentTrainerTest {
         }
         System.out.println(Arrays.toString(calculatedBetasUnregularized));
         Assert.assertArrayEquals(testBetas, calculatedBetasUnregularized, 0.001);
-    }
-
-    /*
-        helper methods
-     */
-
-    /**
-     * @param xIndices x indices
-     * @param xValues  x values
-     * @param y        y
-     * @param weight   weight
-     * @return sparse observation
-     * @throws Exception
-     */
-    private static SparseObservation makeSparseObservation(int[] xIndices, double[] xValues, int y, int weight)
-        throws Exception {
-        if (xIndices == null || xValues == null || xIndices.length != xValues.length) {
-            throw new Exception("array lengths for x values and indices are unequal");
-        }
-        SparseArray x = new SparseArray();
-        for (int i = 0; i < xIndices.length; ++i) {
-            x.set(xIndices[i], xValues[i]);
-        }
-        return new SparseObservation(x, y, weight);
     }
 }

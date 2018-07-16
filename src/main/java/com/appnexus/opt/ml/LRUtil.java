@@ -22,7 +22,7 @@ package com.appnexus.opt.ml;
 public class LRUtil {
 
     /**
-     * @param xRow data
+     * @param xRow           data
      * @param betasWithBeta0 beta weights
      * @return probability(Xi)
      */
@@ -47,7 +47,7 @@ public class LRUtil {
     }
 
     /**
-     * @param xRow data
+     * @param xRow           data
      * @param betasWithBeta0 beta weights
      * @return dot product of data and beta weights
      */
@@ -72,8 +72,8 @@ public class LRUtil {
     }
 
     /**
-     * @param oldBetas Betas from previous iteration
-     * @param newBetas Betas from latest iteration
+     * @param oldBetas  Betas from previous iteration
+     * @param newBetas  Betas from latest iteration
      * @param tolerance
      * @return
      */

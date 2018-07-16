@@ -37,6 +37,10 @@ public class LRResult implements Serializable {
     // MetaData
     private List<LRIterationMetadata> metadataList;
 
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
     public double getAlpha() {
         return alpha;
     }
@@ -99,10 +103,6 @@ public class LRResult implements Serializable {
 
     public void setTrainingEntropy(double trainingEntropy) {
         this.trainingEntropy = trainingEntropy;
-    }
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
     }
 
     @Override

@@ -52,58 +52,6 @@ public class LR {
     }
 
     /**
-     * @param initialBetasWithBeta0 initial betas with beta0
-     * @return initial betas with beta0 (either guessed or unchanged)
-     */
-    double[] getInitialBetasWithBeta0(double[] initialBetasWithBeta0) {
-        double betasWithBeta0[] = initialBetasWithBeta0;
-        if (betasWithBeta0 == null) {
-            betasWithBeta0 = new double[this.numOfFeatures + 1];
-            betasWithBeta0[0] = guessInitialBetaZero();
-        }
-        return betasWithBeta0;
-    }
-
-    /**
-     * @return guessed initial beta0
-     */
-    double guessInitialBetaZero() {
-        double globalCtr = this.totalSuccesses / this.totalWeights;
-        return Math.log(globalCtr / (1 - globalCtr));
-    }
-
-    /**
-     * @param warmStart warm start flag
-     * @return beta results across lambda grid
-     */
-    public LinkedList<LRResult> calculateBetas(boolean warmStart) {
-        LinkedList<LRResult> lrResultList = new LinkedList<>();
-        LRResult lrResult = null;
-        for (double lambda : this.lambdaGrid) {
-            double[] startBetasWithBeta0 = ((warmStart && lrResult != null)
-                ? Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length)
-                : Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
-            lrResult = calculateBetas(startBetasWithBeta0, lambda);
-            lrResultList.add(lrResult);
-        }
-        return lrResultList;
-    }
-
-    /**
-     * @param startBetasWithBeta0 initial betas
-     * @param lambda lambda
-     * @return trained betas
-     */
-    public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda) {
-        return this.modelTrainer.trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0,
-            this.alpha, lambda, this.lambdaScaleFactors, tolerance, maxIterations);
-    }
-
-    /*
-     * helper methods
-     */
-
-    /**
      * @param observations observations
      * @return total success across observations
      */
@@ -125,6 +73,59 @@ public class LR {
             totalWeights += obs.getWeight();
         }
         return totalWeights;
+    }
+
+    /**
+     * @param initialBetasWithBeta0 initial betas with beta0
+     * @return initial betas with beta0 (either guessed or unchanged)
+     */
+    double[] getInitialBetasWithBeta0(double[] initialBetasWithBeta0) {
+        double betasWithBeta0[] = initialBetasWithBeta0;
+        if (betasWithBeta0 == null) {
+            betasWithBeta0 = new double[this.numOfFeatures + 1];
+            betasWithBeta0[0] = guessInitialBetaZero();
+        }
+        return betasWithBeta0;
+    }
+
+    /**
+     * @return guessed initial beta0
+     */
+    double guessInitialBetaZero() {
+        double globalCtr = this.totalSuccesses / this.totalWeights;
+        return Math.log(globalCtr / (1 - globalCtr));
+    }
+
+    /*
+     * helper methods
+     */
+
+    /**
+     * @param warmStart warm start flag
+     * @return beta results across lambda grid
+     */
+    public LinkedList<LRResult> calculateBetas(boolean warmStart) {
+        LinkedList<LRResult> lrResultList = new LinkedList<>();
+        LRResult lrResult = null;
+        for (double lambda : this.lambdaGrid) {
+            double[] startBetasWithBeta0 = ((warmStart && lrResult != null) ?
+                Arrays.copyOf(lrResult.getBetasWithBeta0(), lrResult.getBetasWithBeta0().length) :
+                Arrays.copyOf(this.initialBetasWithBeta0, this.initialBetasWithBeta0.length));
+            lrResult = calculateBetas(startBetasWithBeta0, lambda);
+            lrResultList.add(lrResult);
+        }
+        return lrResultList;
+    }
+
+    /**
+     * @param startBetasWithBeta0 initial betas
+     * @param lambda              lambda
+     * @return trained betas
+     */
+    public LRResult calculateBetas(double[] startBetasWithBeta0, double lambda) {
+        return this.modelTrainer
+            .trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda,
+                this.lambdaScaleFactors, tolerance, maxIterations);
     }
 
 }
