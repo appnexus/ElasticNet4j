@@ -36,13 +36,13 @@ public class TrainingExample {
      */
     public static void runLogisticRegressionExample() {
         /* Below is metadata about the data going into the algorithm as well as metadata for the training algorithm itself. */
-        int numOfObservations = 1000; // total desired number of data observations
-        int numOfFeatures = 200; // total desired number of features
-        double alpha = 1.0; // elastic net parameter for training
-        int maxIterations = 1000; // maximum number of iterations for training
-        int lambdaSize = 1; // number of lambda tuning parameters for training
-        int lambdaStart = 1; // start for lambda tuning parameters for training
-        int lambdaEnd = 17; // end for lambda tuning parameters for training
+        int numOfObservations = 1000;   // total desired number of data observations
+        int numOfFeatures = 200;        // total desired number of features
+        double alpha = 1.0;             // elastic net parameter for training
+        int maxIterations = 1000;       // maximum number of iterations for training
+        int lambdaSize = 1;             // number of lambda tuning parameters for training
+        int lambdaStart = 1;            // start for lambda tuning parameters for training
+        int lambdaEnd = 17;             // end for lambda tuning parameters for training
         /* Generate observations using the metadata above. */
         SparseObservation[] observations = ExampleUtils
             .createTestData(numOfObservations, numOfFeatures, SPARSE_PCT, COL_SEED, BETA_SEED, DATA_SEED, WEIGHT_SEED);

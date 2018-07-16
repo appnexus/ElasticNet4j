@@ -16,20 +16,14 @@
 
 package com.appnexus.opt.examples;
 
+import com.appnexus.opt.ml.*;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.appnexus.opt.ml.CoordinateDescentTrainer;
-import com.appnexus.opt.ml.LR;
-import com.appnexus.opt.ml.LREvalUtil;
-import com.appnexus.opt.ml.LRResult;
-import com.appnexus.opt.ml.LRUtil;
-import com.appnexus.opt.ml.SparseArray;
-import com.appnexus.opt.ml.SparseObservation;
 
 public class TrainingExample2 {
 
@@ -44,11 +38,11 @@ public class TrainingExample2 {
      */
     public static void runLogisticRegressionExample() {
         /* Below is metadata about the data going into the algorithm as well as metadata for the training algorithm itself. */
-        double alpha = 1.0; // elastic net parameter for training
-        int maxIterations = 1000; // maximum number of iterations for training
-        int lambdaSize = 1; // number of lambda tuning parameters for training
-        int lambdaStart = 1; // start for lambda tuning parameters for training
-        int lambdaEnd = 17; // end for lambda tuning parameters for training
+        double alpha = 1.0;         // elastic net parameter for training
+        int maxIterations = 1000;   // maximum number of iterations for training
+        int lambdaSize = 1;         // number of lambda tuning parameters for training
+        int lambdaStart = 1;        // start for lambda tuning parameters for training
+        int lambdaEnd = 17;         // end for lambda tuning parameters for training
 
         /* Read observations from file */
         List<SparseObservation> obsList = new LinkedList<SparseObservation>();
@@ -103,8 +97,8 @@ public class TrainingExample2 {
             System.out.println("LR result: " + lrResult);
             System.out.println(
                 "entropy for test data: " + LREvalUtil.getEntropy(testObservations, lrResult.getBetasWithBeta0()));
-            System.out.println("normalized entropy for test data: "
-                + LREvalUtil.getEntropyNormalized(testObservations, lrResult.getBetasWithBeta0()));
+            System.out.println("normalized entropy for test data: " + LREvalUtil
+                .getEntropyNormalized(testObservations, lrResult.getBetasWithBeta0()));
         }
     }
 
