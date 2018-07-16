@@ -15,19 +15,6 @@
 		<junit.version>4.12</junit.version>
 	</properties>
 
-	<distributionManagement>
-		<repository>
-			<id>central</id>
-			<name>artifactory.prod.nym2.adnexus.net-releases</name>
-			<url>https://artifactory.prod.adnxs.net:443/artifactory/maven</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>artifactory.prod.nym2.adnexus.net-snapshots</name>
-			<url>https://artifactory.prod.adnxs.net:443/artifactory/maven</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
