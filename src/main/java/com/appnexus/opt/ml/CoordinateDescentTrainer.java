@@ -162,11 +162,9 @@ public class CoordinateDescentTrainer implements IModelTrainer {
                         if (j == 0) {
                             newBetasWithBeta0[0] = cj / denominator;
                         } else if (cj < -scaledLambdaMulAlpha[j - 1]) {
-                            newBetasWithBeta0[j] =
-                                denominator == 0 ? 0 : (cj + scaledLambdaMulAlpha[j - 1]) / denominator;
+                            newBetasWithBeta0[j] = (cj + scaledLambdaMulAlpha[j - 1]) / denominator;
                         } else if (cj > scaledLambdaMulAlpha[j - 1]) {
-                            newBetasWithBeta0[j] =
-                                denominator == 0 ? 0 : (cj - scaledLambdaMulAlpha[j - 1]) / denominator;
+                            newBetasWithBeta0[j] = (cj - scaledLambdaMulAlpha[j - 1]) / denominator;
                         } else {
                             newBetasWithBeta0[j] = 0;
                         }

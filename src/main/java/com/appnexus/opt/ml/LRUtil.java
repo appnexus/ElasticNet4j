@@ -93,9 +93,9 @@ public class LRUtil {
     /**
      * Get Max Absolute % difference between oldBetas[j] and newBetas[j] across all values of j
      *
-     * @param oldBetas
-     * @param newBetas
-     * @return
+     * @param oldBetas old betas
+     * @param newBetas new betas
+     * @return max absolute % difference if absolute sum of betas is not 0, otherwise -Double.MAX_VALUE
      */
     public static double getMaxAbsDifferencePct(double[] oldBetas, double[] newBetas) {
         double sumAbsOfNewBetas = 0;
@@ -115,8 +115,8 @@ public class LRUtil {
     /**
      * Generate Scale Factors for scaling lambda for each beta[j]
      *
-     * @param trainingObsArr
-     * @param featureVectorLen
+     * @param trainingObsArr training observation array
+     * @param featureVectorLen length of feature vector
      * @return
      */
     public static double[] generateLambdaScaleFactors(SparseObservation[] trainingObsArr, int featureVectorLen) {
