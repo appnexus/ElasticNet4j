@@ -21,6 +21,9 @@ import com.appnexus.opt.ml.*;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+ * This file demonstrates an example use of the library by generating random training and testing data, training a Logistic Regression model using the training set and evaluating its performance on the testing set
+ */
 public class TrainingExample {
 
     private static final long COL_SEED = 8; // random seed for column (feature) generation

@@ -25,6 +25,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/*
+ * This file demonstrates an example use of the library by reading sample training and testing data from a file, training a Logistic Regression model using the training set and evaluating its performance on the testing set
+ */
 public class TrainingExample2 {
 
     private static final long BETA_SEED = 16;
