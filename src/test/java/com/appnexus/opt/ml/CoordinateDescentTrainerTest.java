@@ -1,3 +1,19 @@
+/*
+ *    Copyright 2018 APPNEXUS INC
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package com.appnexus.opt.ml;
 
 import org.junit.Assert;
@@ -14,6 +30,26 @@ public class CoordinateDescentTrainerTest {
     private static final long BETA_SEED = 16;
     private static final long DATA_SEED = 32;
     private static final long WEIGHT_SEED = 64;
+
+    /**
+     * @param xIndices x indices
+     * @param xValues  x values
+     * @param y        y
+     * @param weight   weight
+     * @return sparse observation
+     * @throws Exception
+     */
+    private static SparseObservation makeSparseObservation(int[] xIndices, double[] xValues, int y, int weight)
+        throws Exception {
+        if (xIndices == null || xValues == null || xIndices.length != xValues.length) {
+            throw new Exception("array lengths for x values and indices are unequal");
+        }
+        SparseArray x = new SparseArray();
+        for (int i = 0; i < xIndices.length; ++i) {
+            x.set(xIndices[i], xValues[i]);
+        }
+        return new SparseObservation(x, y, weight);
+    }
 
     @Test
     public void testCalculateCj2() throws Exception {
@@ -83,6 +119,10 @@ public class CoordinateDescentTrainerTest {
 
     }
 
+    /*
+        helper methods
+     */
+
     /**
      * Test training on randomly generated data while assuming a set of Betas. Compare trained Betas (for lambda == 0) with the assumed set of betas
      */
@@ -115,29 +155,5 @@ public class CoordinateDescentTrainerTest {
         }
         System.out.println(Arrays.toString(calculatedBetasUnregularized));
         Assert.assertArrayEquals(testBetas, calculatedBetasUnregularized, 0.001);
-    }
-
-    /*
-        helper methods
-     */
-
-    /**
-     * @param xIndices x indices
-     * @param xValues  x values
-     * @param y        y
-     * @param weight   weight
-     * @return sparse observation
-     * @throws Exception
-     */
-    private static SparseObservation makeSparseObservation(int[] xIndices, double[] xValues, int y, int weight)
-        throws Exception {
-        if (xIndices == null || xValues == null || xIndices.length != xValues.length) {
-            throw new Exception("array lengths for x values and indices are unequal");
-        }
-        SparseArray x = new SparseArray();
-        for (int i = 0; i < xIndices.length; ++i) {
-            x.set(xIndices[i], xValues[i]);
-        }
-        return new SparseObservation(x, y, weight);
     }
 }

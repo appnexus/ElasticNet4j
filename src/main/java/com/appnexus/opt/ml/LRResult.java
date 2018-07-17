@@ -1,12 +1,28 @@
+/*
+ *    Copyright 2018 APPNEXUS INC
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package com.appnexus.opt.ml;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class LRResult implements Serializable {
-    private static final long serialVersionUID = 4817212848479794019L;
-
+/**
+ * This object represents the trained LR model for a specific set of training parameters. It also holds a list of {@link LRIterationMetadata} representing the intermediate results of each iteration during the training process
+ */
+public class LRResult {
     private double alpha;
     private double lambda;
     private double[] betasWithBeta0;
@@ -80,10 +96,6 @@ public class LRResult implements Serializable {
 
     public void setTrainingEntropy(double trainingEntropy) {
         this.trainingEntropy = trainingEntropy;
-    }
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
     }
 
     @Override

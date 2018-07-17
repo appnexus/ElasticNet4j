@@ -1,21 +1,101 @@
+/*
+ *    Copyright 2018 APPNEXUS INC
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package com.appnexus.opt.ml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class implements a {@link IModelTrainer} that uses Coordinate Descent method to train Logistic Regression models
+ */
 public class CoordinateDescentTrainer implements IModelTrainer {
     private static final double PROB_EPSILON = 1e-15;
 
+    /**
+     * Calculate the Cj term. This is re-computed after calculating every 'j'th beta
+     *
+     * @param j                        index of the 'j'th beta starting from beta0
+     * @param weightedCovarianceMatrix mi weighted covariance matrix with diagonal terms zeroed out
+     * @param currentBetasWithBeta0    current betas with beta0
+     * @param cjStaticTerm             cjStaticTerm[0] += mi[i] * zi[i] / W; AND cjStaticTerm[j + 1] += mi[i] * xij * zi[i] / W; // c-terms first part
+     * @param totalWeights             sum of all weights / total trials
+     */
+    static double calculateCj2(int j, double[][] weightedCovarianceMatrix, double[] currentBetasWithBeta0,
+        double cjStaticTerm, double totalWeights) {
+        double residual = 0;
+        for (int k = 0; k < currentBetasWithBeta0.length; ++k) {
+            residual += weightedCovarianceMatrix[j][k] * currentBetasWithBeta0[k];
+        }
+        return cjStaticTerm - residual / totalWeights;
+    }
+
+    /**
+     * Calculate mi weighted covariance matrix
+     *
+     * @param size         dimensions of the square matrix
+     * @param observations array of sparse observations
+     * @param mi           weights
+     * @return weighted covariance matrix of observation data
+     */
+    static double[][] getWeightedCovarianceMatrix(int size, SparseObservation[] observations, double[] mi) {
+        double[][] weightedCovarianceMatrix = new double[size][size];
+        for (int i = 0; i < observations.length; ++i) {
+            /*
+             * compute sum of Xj * Xk where j < k note: matrix is symmetrical
+             */
+            for (SparseArray.Entry xRowj : observations[i].getX()) {
+                int j = xRowj.i + 1;
+                for (SparseArray.Entry xRowk : observations[i].getX()) {
+                    int k = xRowk.i + 1;
+                    if (j < k) {
+                        double value = mi[i] * xRowj.x * xRowk.x;
+                        weightedCovarianceMatrix[j][k] += value;
+                        weightedCovarianceMatrix[k][j] += value;
+                    }
+                }
+            }
+            /*
+             * add in the entries of the matrix for the 0th row and the 0th column (i.e. beta 0) note: beta0 will always have an X value of 1 since it's "always present"
+             */
+            for (SparseArray.Entry xRowj : observations[i].getX()) {
+                int j = xRowj.i + 1;
+                if (j != 0) {
+                    double value = mi[i] * xRowj.x * 1;
+                    weightedCovarianceMatrix[j][0] += value;
+                    weightedCovarianceMatrix[0][j] += value;
+
+                }
+            }
+        }
+        return weightedCovarianceMatrix;
+    }
+
     @Override
-    public LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights, double[] oldBetasWithBeta0, double alpha, double lambda, double[] lambdaScaleFactors, double tolerance, int maxIterations) {
+    public LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights,
+        double[] oldBetasWithBeta0, double alpha, double lambda, double[] lambdaScaleFactors, double tolerance,
+        int maxIterations) {
         LRResult lrResult = new LRResult();
         List<LRIterationMetadata> metadataList = new ArrayList<>();
         lrResult.setMetaDataList(metadataList);
         long start = System.currentTimeMillis();
 
         /*
-          Calculate mi (current weight) and zi (current target) terms for each observation
+         * Calculate mi (current weight) and zi (current target) terms for each observation
          */
         double[] mi = new double[observations.length];
         double[] zi = new double[observations.length];
@@ -29,7 +109,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         }
 
         /*
-          Calculate a-term and static c-term components for each beta weight
+         * Calculate a-term and static c-term components for each beta weight
          */
         double[] aj = new double[oldBetasWithBeta0.length];
         double[] cjStaticTerm = new double[oldBetasWithBeta0.length];
@@ -49,7 +129,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         }
 
         /*
-          Update and refine betas until convergence
+         * Update and refine betas until convergence
          */
         double[] scaledLambdaMulAlpha = new double[oldBetasWithBeta0.length - 1];
         for (int i = 0; i < scaledLambdaMulAlpha.length; ++i) {
@@ -77,13 +157,14 @@ public class CoordinateDescentTrainer implements IModelTrainer {
                 } else {
                     double denominator = j == 0 ? aj[0] : aj[j] + scaledLambdaMulOneMinusAlpha[j - 1];
                     if (denominator != 0) {
-                        double cj = calculateCj2(j, weightedCovarianceMatrix, newBetasWithBeta0, cjStaticTerm[j], totalWeights);
+                        double cj = calculateCj2(j, weightedCovarianceMatrix, newBetasWithBeta0, cjStaticTerm[j],
+                            totalWeights);
                         if (j == 0) {
                             newBetasWithBeta0[0] = cj / denominator;
                         } else if (cj < -scaledLambdaMulAlpha[j - 1]) {
-                            newBetasWithBeta0[j] = denominator == 0 ? 0 : (cj + scaledLambdaMulAlpha[j - 1]) / denominator;
+                            newBetasWithBeta0[j] = (cj + scaledLambdaMulAlpha[j - 1]) / denominator;
                         } else if (cj > scaledLambdaMulAlpha[j - 1]) {
-                            newBetasWithBeta0[j] = denominator == 0 ? 0 : (cj - scaledLambdaMulAlpha[j - 1]) / denominator;
+                            newBetasWithBeta0[j] = (cj - scaledLambdaMulAlpha[j - 1]) / denominator;
                         } else {
                             newBetasWithBeta0[j] = 0;
                         }
@@ -93,14 +174,14 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             ++iterations;
 
             /*
-              Calculate convergence error
+             * Calculate convergence error
              */
             maxAbsDifferencePct = LRUtil.getMaxAbsDifferencePct(oldBetasWithBeta0, newBetasWithBeta0);
             trainingEntropy = LREvalUtil.getEntropy(observations, newBetasWithBeta0);
             long endLoop = System.currentTimeMillis();
 
             /*
-              Record Metrics
+             * Record Metrics
              */
             LRIterationMetadata iterationMetadata = new LRIterationMetadata();
             iterationMetadata.setAlpha(alpha);
@@ -114,14 +195,14 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             metadataList.add(iterationMetadata);
 
             /*
-              Set New betas to old for next Iteration
+             * Set New betas to old for next Iteration
              */
             oldBetasWithBeta0 = Arrays.copyOf(newBetasWithBeta0, newBetasWithBeta0.length);
         } while (!LRUtil.hasConverged(maxAbsDifferencePct, tolerance) && iterations < maxIterations);
         long trainingTimeMillis = System.currentTimeMillis() - start;
 
         /*
-          Create LRResult
+         * Create LRResult
          */
         lrResult.setAlpha(alpha);
         lrResult.setLambda(lambda);
@@ -131,65 +212,5 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         lrResult.setBetasWithBeta0(newBetasWithBeta0);
         lrResult.setTrainingTimeMillis(trainingTimeMillis);
         return lrResult;
-    }
-
-    /**
-     * Calculate the Cj term. This is re-computed after calculating every 'j'th beta
-     * 
-     * @param j index of the 'j'th beta starting from beta0
-     * @param weightedCovarianceMatrix mi weighted covariance matrix with diagonal terms zeroed out
-     * @param currentBetasWithBeta0 current betas with beta0
-     * @param cjStaticTerm cjStaticTerm[0] += mi[i] * zi[i] / W; AND cjStaticTerm[j + 1] += mi[i] * xij * zi[i] / W; // c-terms first part
-     * @param totalWeights sum of all weights / total trials
-     */
-    static double calculateCj2(int j, double[][] weightedCovarianceMatrix, double[] currentBetasWithBeta0, double cjStaticTerm, double totalWeights) {
-        double residual = 0;
-        for (int k = 0; k < currentBetasWithBeta0.length; ++k) {
-            residual += weightedCovarianceMatrix[j][k] * currentBetasWithBeta0[k];
-        }
-        return cjStaticTerm - residual / totalWeights;
-    }
-
-    /**
-     * Calculate mi weighted covariance matrix
-     * 
-     * @param size dimensions of the square matrix
-     * @param observations array of sparse observations
-     * @param mi weights
-     * @return weighted covariance matrix of observation data
-     */
-    static double[][] getWeightedCovarianceMatrix(int size, SparseObservation[] observations, double[] mi) {
-        double[][] weightedCovarianceMatrix = new double[size][size];
-        for (int i = 0; i < observations.length; ++i) {
-            /*
-                compute sum of Xj * Xk where j < k
-                note: matrix is symmetrical
-             */
-            for (SparseArray.Entry xRowj : observations[i].getX()) {
-                int j = xRowj.i + 1;
-                for (SparseArray.Entry xRowk : observations[i].getX()) {
-                    int k = xRowk.i + 1;
-                    if (j < k) {
-                        double value = mi[i] * xRowj.x * xRowk.x;
-                        weightedCovarianceMatrix[j][k] += value;
-                        weightedCovarianceMatrix[k][j] += value;
-                    }
-                }
-            }
-            /*
-                add in the entries of the matrix for the 0th row and the 0th column (i.e. beta 0)
-                note: beta0 will always have an X value of 1 since it's "always present"
-             */
-            for (SparseArray.Entry xRowj : observations[i].getX()) {
-                int j = xRowj.i + 1;
-                if (j != 0) {
-                    double value = mi[i] * xRowj.x * 1;
-                    weightedCovarianceMatrix[j][0] += value;
-                    weightedCovarianceMatrix[0][j] += value;
-
-                }
-            }
-        }
-        return weightedCovarianceMatrix;
     }
 }

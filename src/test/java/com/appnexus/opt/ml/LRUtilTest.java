@@ -1,3 +1,19 @@
+/*
+ *    Copyright 2018 APPNEXUS INC
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package com.appnexus.opt.ml;
 
 import org.junit.Assert;
@@ -7,6 +23,21 @@ public class LRUtilTest {
     public static final int MT_LAMBDA_GRID_SIZE = 64;
     public static final double MT_LAMBDA_GRID_START = -5;
     public static final double MT_LAMBDA_GRID_END = 5;
+
+    /**
+     * HELPERS
+     */
+    static SparseObservation makeTjSparseObservation(int[] xIndixes, double[] xValues, int y, int weight)
+        throws Exception {
+        if (xIndixes == null || xValues == null || xIndixes.length != xValues.length) {
+            throw new Exception("WTF Son !!!");
+        }
+        SparseArray x = new SparseArray();
+        for (int i = 0; i < xIndixes.length; ++i) {
+            x.set(xIndixes[i], xValues[i]);
+        }
+        return new SparseObservation(x, y, weight);
+    }
 
     @Test
     public void testCalcProbWithSparseArrayAndBetas() throws Exception {
@@ -118,20 +149,5 @@ public class LRUtilTest {
     @Test
     public void testGetLambdaGridNull() {
         Assert.assertArrayEquals(LRUtil.getLambdaGrid(0, 0, 0), null, 1e-10);
-    }
-
-    /**
-     * HELPERS
-     */
-    static SparseObservation makeTjSparseObservation(int[] xIndixes, double[] xValues, int y, int weight)
-        throws Exception {
-        if (xIndixes == null || xValues == null || xIndixes.length != xValues.length) {
-            throw new Exception("WTF Son !!!");
-        }
-        SparseArray x = new SparseArray();
-        for (int i = 0; i < xIndixes.length; ++i) {
-            x.set(xIndixes[i], xValues[i]);
-        }
-        return new SparseObservation(x, y, weight);
     }
 }

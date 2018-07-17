@@ -1,8 +1,27 @@
+/*
+ *    Copyright 2018 APPNEXUS INC
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package com.appnexus.opt.ml;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 
+/**
+ * This class is the entry point into using the LR training functionality
+ */
 public class LR {
     private final SparseObservation[] observations; // contains x, y and weight but does not contain entries for beta0
     private final int numOfFeatures;
@@ -33,6 +52,30 @@ public class LR {
     }
 
     /**
+     * @param observations observations
+     * @return total success across observations
+     */
+    static double getTotalSuccesses(SparseObservation[] observations) {
+        double totalSuccesses = 0;
+        for (SparseObservation obs : observations) {
+            totalSuccesses += obs.getY();
+        }
+        return totalSuccesses;
+    }
+
+    /**
+     * @param observations observations
+     * @return total weights across observations
+     */
+    static double getTotalWeights(SparseObservation[] observations) {
+        double totalWeights = 0;
+        for (SparseObservation obs : observations) {
+            totalWeights += obs.getWeight();
+        }
+        return totalWeights;
+    }
+
+    /**
      * @param initialBetasWithBeta0 initial betas with beta0
      * @return initial betas with beta0 (either guessed or unchanged)
      */
@@ -52,6 +95,10 @@ public class LR {
         double globalCtr = this.totalSuccesses / this.totalWeights;
         return Math.log(globalCtr / (1 - globalCtr));
     }
+
+    /*
+     * helper methods
+     */
 
     /**
      * @param warmStart warm start flag
@@ -79,34 +126,6 @@ public class LR {
         return this.modelTrainer
             .trainNewBetasWithBeta0(this.observations, this.totalWeights, startBetasWithBeta0, this.alpha, lambda,
                 this.lambdaScaleFactors, tolerance, maxIterations);
-    }
-
-    /*
-        helper methods
-     */
-
-    /**
-     * @param observations observations
-     * @return total success across observations
-     */
-    static double getTotalSuccesses(SparseObservation[] observations) {
-        double totalSuccesses = 0;
-        for (SparseObservation obs : observations) {
-            totalSuccesses += obs.getY();
-        }
-        return totalSuccesses;
-    }
-
-    /**
-     * @param observations observations
-     * @return total weights across observations
-     */
-    static double getTotalWeights(SparseObservation[] observations) {
-        double totalWeights = 0;
-        for (SparseObservation obs : observations) {
-            totalWeights += obs.getWeight();
-        }
-        return totalWeights;
     }
 
 }
