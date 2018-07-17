@@ -1,6 +1,7 @@
 # Tomato Juice
 
 ## Overview
+A simple and efficient Machine Learning library for training Logistic Regression models on sparse data with rare events.
 
 ## Examples
 
