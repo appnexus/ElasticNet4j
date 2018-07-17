@@ -16,16 +16,13 @@
 
 package com.appnexus.opt.ml;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * This object represents the trained LR model for a specific set of training parameters. It also holds a list of {@link LRIterationMetadata} representing the intermediate results of each iteration during the training process
  */
-public class LRResult implements Serializable {
-    private static final long serialVersionUID = 4817212848479794019L;
-
+public class LRResult {
     private double alpha;
     private double lambda;
     private double[] betasWithBeta0;
@@ -36,10 +33,6 @@ public class LRResult implements Serializable {
 
     // MetaData
     private List<LRIterationMetadata> metadataList;
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
 
     public double getAlpha() {
         return alpha;

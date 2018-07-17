@@ -25,7 +25,6 @@ import com.appnexus.opt.ml.SparseObservation;
 public class ExampleUtils {
 
     private static final double DEFAULT_BETA_0 = -3;
-    private static final double BETA_MAX = 1.5;
 
     /**
      * @param numOfBetasWithBeta0 number of betas with beta 0
@@ -37,7 +36,7 @@ public class ExampleUtils {
         double[] betas = new double[numOfBetasWithBeta0];
         betas[0] = DEFAULT_BETA_0;
         for (int i = 1; i < numOfBetasWithBeta0; ++i) {
-            betas[i] = (rn.nextDouble() - 0.5D) + BETA_MAX;
+            betas[i] = (rn.nextDouble() - 0.5D) + 1.5; // Generate betas between 1D and 2D
         }
         return betas;
     }
