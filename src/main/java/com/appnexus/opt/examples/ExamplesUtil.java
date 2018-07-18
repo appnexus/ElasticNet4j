@@ -22,7 +22,7 @@ import com.appnexus.opt.ml.LRUtil;
 import com.appnexus.opt.ml.SparseArray;
 import com.appnexus.opt.ml.SparseObservation;
 
-public class ExampleUtils {
+public class ExamplesUtil {
 
     private static final double DEFAULT_BETA_0 = -3;
 

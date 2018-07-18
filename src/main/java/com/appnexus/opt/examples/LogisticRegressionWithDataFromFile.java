@@ -49,9 +49,9 @@ public class LogisticRegressionWithDataFromFile {
         int lambdaEnd = 17;         // end for lambda tuning parameters for training
 
         /* Read sparse observation data from file */
-        DataFromFile dataFromFile = readSparseObservationsFromFile();
-        SparseObservation[] observations = dataFromFile.getSparseObservations();
-        int numOfFeatures = dataFromFile.getNumOfFeatures();
+        SparseObservationDataFromFile sparseObservationDataFromFile = readSparseObservationsFromFile();
+        SparseObservation[] observations = sparseObservationDataFromFile.getSparseObservations();
+        int numOfFeatures = sparseObservationDataFromFile.getNumOfFeatures();
         /* Generate a grid of lambda tuning parameters using the metadata above. */
         double[] lambdaGrid = LRUtil.getLambdaGrid(lambdaSize, lambdaStart, lambdaEnd);
         /* Use TRAINING_PCT percentage of data as training data for our algorithm. The remainder is data to test our algorithm. */
@@ -61,7 +61,7 @@ public class LogisticRegressionWithDataFromFile {
         /* Generate lambda scale factors for the training algorithm. */
         double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(trainObservations, numOfFeatures);
         /* Generate an initial beta weight vector that will be updated by the training algorithm per iteration. */
-        double[] initialBetas = ExampleUtils.createBetas(numOfFeatures + 1, BETA_SEED);
+        double[] initialBetas = ExamplesUtil.createBetas(numOfFeatures + 1, BETA_SEED);
         /* Train! */
         LR lr = new LR(trainObservations, numOfFeatures, initialBetas, alpha, lambdaGrid, lambdaScaleFactors, TOLERANCE,
             maxIterations, new CoordinateDescentTrainer());
@@ -79,7 +79,7 @@ public class LogisticRegressionWithDataFromFile {
     /**
      * @return sparse observation data read in from a file
      */
-    private static DataFromFile readSparseObservationsFromFile() {
+    private static SparseObservationDataFromFile readSparseObservationsFromFile() {
         List<SparseObservation> obsList = new LinkedList<SparseObservation>();
         int numOfFeatures = 0;
         BufferedReader br = null;
@@ -113,7 +113,7 @@ public class LogisticRegressionWithDataFromFile {
         }
         SparseObservation[] observations = new SparseObservation[obsList.size()];
         obsList.toArray(observations);
-        return new DataFromFile(observations, numOfFeatures);
+        return new SparseObservationDataFromFile(observations, numOfFeatures);
     }
 
     /*
