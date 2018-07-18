@@ -1,20 +1,21 @@
 # Tomato Juice
 
 ## Overview
-A simple and efficient Machine Learning library for training Logistic Regression models on sparse data with rare events.
+
+Tomato Juice is a simple and efficient Machine Learning library for training Logistic Regression models on sparse data with rare events.
 
 ## Examples
 
-Within the examples package, you can find two examples (`TrainingExample.java` and `TrainingExample2.java`). 
+For a guided walk-through of how to use the library, you can check out the examples package. Within the examples package, you can find two examples (`LogisticRegressionWithGeneratedData.java` and `LogisticRegressionWithDataFromFile.java`). 
 
-### `TrainingExample.java`
+### `LogisticRegressionWithGeneratedData.java`
 
-This example contains a full-run through of our logistic regression training algorithm including
-* setting up sample parameters for training including sample data
+This example contains a full-run through of our logistic regression algorithm including
+* setting up sample parameters for training including input data
 * training (logistic regression)
-* testing the results of the algorithm on test data
+* evaluating the performance of the training results on test data
 
-### `TrainingExample2.java`
+### `LogisticRegressionWithDataFromFile.java`
 
 This example is similar to the one above only it reads data from a file (`observations.tsv`) rather than generating data. 
 
