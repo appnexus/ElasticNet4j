@@ -26,15 +26,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 /*
- * This file demonstrates an example use of the library by reading sample training and testing data from a file, training a Logistic Regression model using the training set and evaluating its performance on the testing set
+ * This file demonstrates an example use of the library by reading sample training and testing data from a file,
+ * training a Logistic Regression model using the training set and evaluating its performance on the testing set.
  */
-public class TrainingExample2 {
+public class LogisticRegressionWithDataFromFile {
 
-    private static final long BETA_SEED = 16;
-    private static final double TOLERANCE = 1e-6;
-    private static final double TRAINING_PCT = 0.9;
+    private static final long BETA_SEED = 16;       // random seed for beta generation
+    private static final double TOLERANCE = 1e-6;   // tolerance of training algorithm
+    private static final double TRAINING_PCT = 0.9; // desired percentage of data for training algorithm
 
-    private static final String OBS_FILE = "observations.tsv";
+    private static final String DATA_FILE = "observations.tsv"; // file containing training and testing data
 
     /**
      * Example of how to use our logistic regression library for training and testing data
@@ -47,12 +48,43 @@ public class TrainingExample2 {
         int lambdaStart = 1;        // start for lambda tuning parameters for training
         int lambdaEnd = 17;         // end for lambda tuning parameters for training
 
-        /* Read observations from file */
+        /* Read sparse observation data from file */
+        DataFromFile dataFromFile = readSparseObservationsFromFile();
+        SparseObservation[] observations = dataFromFile.getSparseObservations();
+        int numOfFeatures = dataFromFile.getNumOfFeatures();
+        /* Generate a grid of lambda tuning parameters using the metadata above. */
+        double[] lambdaGrid = LRUtil.getLambdaGrid(lambdaSize, lambdaStart, lambdaEnd);
+        /* Use TRAINING_PCT percentage of data as training data for our algorithm. The remainder is data to test our algorithm. */
+        int splitIdx = (int) (TRAINING_PCT * observations.length);
+        SparseObservation[] trainObservations = Arrays.copyOfRange(observations, 0, splitIdx);
+        SparseObservation[] testObservations = Arrays.copyOfRange(observations, splitIdx, observations.length);
+        /* Generate lambda scale factors for the training algorithm. */
+        double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(trainObservations, numOfFeatures);
+        /* Generate an initial beta weight vector that will be updated by the training algorithm per iteration. */
+        double[] initialBetas = ExampleUtils.createBetas(numOfFeatures + 1, BETA_SEED);
+        /* Train! */
+        LR lr = new LR(trainObservations, numOfFeatures, initialBetas, alpha, lambdaGrid, lambdaScaleFactors, TOLERANCE,
+            maxIterations, new CoordinateDescentTrainer());
+        /* Visualize the results of the training algorithm and calculate entropy for the test data. */
+        List<LRResult> lrResults = lr.calculateBetas(false);
+        for (LRResult lrResult : lrResults) {
+            System.out.println("LR result: " + lrResult);
+            System.out.println(
+                "entropy for test data: " + LREvalUtil.getEntropy(testObservations, lrResult.getBetasWithBeta0()));
+            System.out.println("normalized entropy for test data: " + LREvalUtil
+                .getEntropyNormalized(testObservations, lrResult.getBetasWithBeta0()));
+        }
+    }
+
+    /**
+     * @return sparse observation data read in from a file
+     */
+    private static DataFromFile readSparseObservationsFromFile() {
         List<SparseObservation> obsList = new LinkedList<SparseObservation>();
         int numOfFeatures = 0;
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(OBS_FILE));
+            br = new BufferedReader(new FileReader(DATA_FILE));
             String readLine = null;
             while ((readLine = br.readLine()) != null) {
                 String[] parts = readLine.split("\t");
@@ -81,28 +113,7 @@ public class TrainingExample2 {
         }
         SparseObservation[] observations = new SparseObservation[obsList.size()];
         obsList.toArray(observations);
-        /* Generate a grid of lambda tuning parameters using the metadata above. */
-        double[] lambdaGrid = LRUtil.getLambdaGrid(lambdaSize, lambdaStart, lambdaEnd);
-        /* Use TRAINING_PCT percentage of data as training data for our algorithm. The remainder is data to test our algorithm. */
-        int splitIdx = (int) (TRAINING_PCT * observations.length);
-        SparseObservation[] trainObservations = Arrays.copyOfRange(observations, 0, splitIdx);
-        SparseObservation[] testObservations = Arrays.copyOfRange(observations, splitIdx, observations.length);
-        /* Generate lambda scale factors for the training algorithm. */
-        double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(trainObservations, numOfFeatures);
-        /* Generate an initial beta weight vector that will be updated by the training algorithm per iteration. */
-        double[] initialBetas = ExampleUtils.createBetas(numOfFeatures + 1, BETA_SEED);
-        /* Train! */
-        LR lr = new LR(trainObservations, numOfFeatures, initialBetas, alpha, lambdaGrid, lambdaScaleFactors, TOLERANCE,
-            maxIterations, new CoordinateDescentTrainer());
-        /* Visualize the results of the training algorithm and calculate entropy for the test data. */
-        List<LRResult> lrResults = lr.calculateBetas(false);
-        for (LRResult lrResult : lrResults) {
-            System.out.println("LR result: " + lrResult);
-            System.out.println(
-                "entropy for test data: " + LREvalUtil.getEntropy(testObservations, lrResult.getBetasWithBeta0()));
-            System.out.println("normalized entropy for test data: " + LREvalUtil
-                .getEntropyNormalized(testObservations, lrResult.getBetasWithBeta0()));
-        }
+        return new DataFromFile(observations, numOfFeatures);
     }
 
     /*
