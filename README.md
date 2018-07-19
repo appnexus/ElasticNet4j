@@ -16,7 +16,7 @@ int weight = 19 // Number of occurrences of this feature vector in the data set
 SparseObservation featureVector = new SparseObservation(x, y, weight); // Sparse feature vector
 ```
 
-
+Once the data set is read into the `SparseObservation`s we can begin training models
 ```java
 SparseObservation[] featureVectorsForTraining = ...; // Training dataset
 int numOfFeatures = 100; // Total Number of distinct features in your data set
