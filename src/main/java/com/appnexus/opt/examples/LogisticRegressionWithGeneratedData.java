@@ -22,16 +22,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /*
- * This file demonstrates an example use of the library by generating random training and testing data, training a Logistic Regression model using the training set and evaluating its performance on the testing set
+ * This file demonstrates an example use of the library by generating random training and testing data,
+ * training a Logistic Regression model using the training set and evaluating its performance on the testing set.
  */
-public class TrainingExample {
+public class LogisticRegressionWithGeneratedData {
 
-    private static final long COL_SEED = 8; // random seed for column (feature) generation
-    private static final long BETA_SEED = 16; // random seed for beta generation
-    private static final long DATA_SEED = 32; // random seed for data (feature value) generation
-    private static final long WEIGHT_SEED = 64; // random seed for observation weight generation
-    private static final double SPARSE_PCT = 0.1; // desired percentage of nonzero features
-    private static final double TOLERANCE = 1e-6; // tolerance of training algorithm
+    private static final long COL_SEED = 8;         // random seed for column (feature) generation
+    private static final long BETA_SEED = 16;       // random seed for beta generation
+    private static final long DATA_SEED = 32;       // random seed for data (feature value) generation
+    private static final long WEIGHT_SEED = 64;     // random seed for observation weight generation
+    private static final double SPARSE_PCT = 0.1;   // desired percentage of nonzero features
+    private static final double TOLERANCE = 1e-6;   // tolerance of training algorithm
     private static final double TRAINING_PCT = 0.9; // desired percentage of data for training algorithm
 
     /**
@@ -47,7 +48,7 @@ public class TrainingExample {
         int lambdaStart = 1;            // start for lambda tuning parameters for training
         int lambdaEnd = 17;             // end for lambda tuning parameters for training
         /* Generate observations using the metadata above. */
-        SparseObservation[] observations = ExampleUtils
+        SparseObservation[] observations = ExamplesUtil
             .createTestData(numOfObservations, numOfFeatures, SPARSE_PCT, COL_SEED, BETA_SEED, DATA_SEED, WEIGHT_SEED);
         /* Generate a grid of lambda tuning parameters using the metadata above. */
         double[] lambdaGrid = LRUtil.getLambdaGrid(lambdaSize, lambdaStart, lambdaEnd);
@@ -58,7 +59,7 @@ public class TrainingExample {
         /* Generate lambda scale factors for the training algorithm. */
         double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(trainObservations, numOfFeatures);
         /* Generate an initial beta weight vector that will be updated by the training algorithm per iteration. */
-        double[] initialBetas = ExampleUtils.createBetas(numOfFeatures + 1, BETA_SEED);
+        double[] initialBetas = ExamplesUtil.createBetas(numOfFeatures + 1, BETA_SEED);
         /* Train! */
         LR lr = new LR(trainObservations, numOfFeatures, initialBetas, alpha, lambdaGrid, lambdaScaleFactors, TOLERANCE,
             maxIterations, new CoordinateDescentTrainer());
