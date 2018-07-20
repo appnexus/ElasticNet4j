@@ -1,6 +1,7 @@
 # Tomato Juice
 ## What is **Tomato Juice**?
-A simple and efficient Machine Learning library for training Logistic Regression models on sparse data with rare events. The library uses Coordinate Descent for model training based on the GLMNET paper.
+A simple and efficient Machine Learning library for training Logistic Regression models on sparse data with rare events. The library uses Coordinate Descent for model training based on the Stanford University paper [Regularization Paths for Generalized Linear Models
+via Coordinate Descent](http://web.stanford.edu/%7Ehastie/Papers/glmnet.pdf).
 
 ## Usage
 The algorithm uses a data-structure called `SparseObservation` to hold the sparse feature vectors. The features themselves are stored in a `SparseArray` for minimizing the memory footprint
