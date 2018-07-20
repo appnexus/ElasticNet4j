@@ -25,6 +25,25 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+class SparseObservationDataFromFile {
+
+    private SparseObservation[] sparseObservations;
+    private int numOfFeatures;
+
+    SparseObservationDataFromFile(SparseObservation[] sparseObservations, int numOfFeatures) {
+        this.sparseObservations = sparseObservations;
+        this.numOfFeatures = numOfFeatures;
+    }
+
+    SparseObservation[] getSparseObservations() {
+        return sparseObservations;
+    }
+
+    int getNumOfFeatures() {
+        return numOfFeatures;
+    }
+}
+
 /*
  * This file demonstrates an example use of the library by reading sample training and testing data from a file,
  * training a Logistic Regression model using the training set and evaluating its performance on the testing set.
