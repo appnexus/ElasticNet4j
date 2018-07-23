@@ -6,12 +6,12 @@ via Coordinate Descent](http://web.stanford.edu/%7Ehastie/Papers/glmnet.pdf).
 ## Getting Started 
 We support building with Maven. 
 
-### Building Locally
+## Building Locally
 ```
 $ mvn clean install
 ```
 
-### Running Unit Tests
+## Running Unit Tests
 ```
 $ mvn test
 ```
