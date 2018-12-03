@@ -1,8 +1,6 @@
 package com.appnexus.opt.ml;
 
 
-import com.appnexus.opt.tj.TJConstants;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -119,7 +117,7 @@ public class MultiThreadingUtil {
     public static void closeExecutorPool(ExecutorService execPool) {
         execPool.shutdown();
         try {
-            if (!execPool.awaitTermination(TJConstants.MT_EXEC_POOL_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+            if (!execPool.awaitTermination(LRConstants.MT_EXEC_POOL_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
                 execPool.shutdownNow();
             }
         } catch (InterruptedException e) {

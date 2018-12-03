@@ -5,15 +5,12 @@ public class ModelErrorMetrics {
     private double predRatio;
     private double bias;
     private double entropyNormalized;
-    private boolean chosenModel;
 
-    public ModelErrorMetrics(double scaleFactor, double predRatio, double bias, double entropyNormalized,
-        boolean chosenModel) {
+    public ModelErrorMetrics(double scaleFactor, double predRatio, double bias, double entropyNormalized) {
         this.scaleFactor = scaleFactor;
         this.predRatio = predRatio;
         this.bias = bias;
         this.entropyNormalized = entropyNormalized;
-        this.chosenModel = chosenModel;
     }
 
     public double getScaleFactor() {
@@ -30,10 +27,6 @@ public class ModelErrorMetrics {
 
     public double getEntropyNormalized() {
         return this.entropyNormalized;
-    }
-
-    public boolean isChosenModel() {
-        return this.chosenModel;
     }
 }
 

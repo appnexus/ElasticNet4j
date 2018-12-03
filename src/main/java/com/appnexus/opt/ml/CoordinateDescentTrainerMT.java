@@ -1,7 +1,5 @@
 package com.appnexus.opt.ml;
 
-import com.appnexus.opt.tj.feh.objects.TJSparseObservation;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -25,8 +23,8 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
         double[] oldBetasWithBeta0, double alpha, double lambda, double[] lambdaScaleFactors, double tolerance,
         int maxIterations) {
         LRResult lrResult = new LRResult();
-        ArrayList<LRIterationMetadata> metaDataList = new ArrayList<>();
-        lrResult.setMetaDataList(metaDataList);
+        ArrayList<LRIterationMetadata> metadataList = new ArrayList<>();
+        lrResult.setMetaDataList(metadataList);
 
         // retrieve datasetRanges
         List<DatasetRange> datasetRanges = MultiThreadingUtil
@@ -144,11 +142,17 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
             /*
               Record Metrics
              */
-            // Create MetaData
-            LRIterationMetaData lrmd = LRIterationMetaData
-                .makeLRIterationMetaData(alpha, lambda, iters, maxAbsDifferencePct, trainingEntropy, newBetasWithBeta0,
-                    endLoop - startLoop);
-            metaDataList.add(lrmd);
+            // create metadata
+            LRIterationMetadata iterationMetadata = new LRIterationMetadata();
+            iterationMetadata.setAlpha(alpha);
+            iterationMetadata.setLambda(lambda);
+            iterationMetadata.setIteration(iters);
+            iterationMetadata.setMaxAbsDifferencePct(maxAbsDifferencePct);
+            iterationMetadata.setTrainingEntropy(trainingEntropy);
+            iterationMetadata.setBetas(newBetasWithBeta0);
+            iterationMetadata.setTrainingTimeMillis(endLoop - startLoop);
+
+            metadataList.add(iterationMetadata);
             /*
               Set New betas to old for next Iteration
              */
@@ -176,19 +180,19 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
     /**
      * Calculate the Cj term. This is re-computed after calculating every 'j'th beta
      *
-     * @param j                     : index of the 'j'th beta starting from beta0
-     * @param weightedCovar         : mi weighted covar matrix with diagonal terms zeroed out
-     * @param currentBetasWithBeta0
-     * @param cj_1                  -> cj_1[0] += mi[i] * zi[i] / W; AND cj_1[j + 1] += mi[i] * xij * zi[i] / W; // c-terms first part
-     * @param totalWeights          -> sum of all weights / total trials
+     * @param j                        index of the 'j'th beta starting from beta0
+     * @param weightedCovarianceMatrix mi weighted covariance matrix with diagonal terms zeroed out
+     * @param currentBetasWithBeta0    current betas with beta0
+     * @param cjStaticTerm             cjStaticTerm[0] += mi[i] * zi[i] / W; AND cjStaticTerm[j + 1] += mi[i] * xij * zi[i] / W; // c-terms first part
+     * @param totalWeights             sum of all weights / total trials
      */
-    private static double calculateCj2(int j, double[][] weightedCovar, double[] currentBetasWithBeta0, double cj_1,
-        double totalWeights) {
+    static double calculateCj2(int j, double[][] weightedCovarianceMatrix, double[] currentBetasWithBeta0,
+        double cjStaticTerm, double totalWeights) {
         double residual = 0;
         for (int k = 0; k < currentBetasWithBeta0.length; ++k) {
-            residual += weightedCovar[j][k] * currentBetasWithBeta0[k];
+            residual += weightedCovarianceMatrix[j][k] * currentBetasWithBeta0[k];
         }
-        return cj_1 - residual / totalWeights;
+        return cjStaticTerm - residual / totalWeights;
     }
 
     /**
@@ -247,7 +251,7 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
         @Override
         public Boolean call() {
             for (int i = this.datasetRange.getStartIdx(); i < this.datasetRange.getEndIdx(); ++i) {
-                TJSparseObservation o = (TJSparseObservation) this.datasetRange.getDataset()[i];
+                SparseObservation o = (SparseObservation) this.datasetRange.getDataset()[i];
                 double betasDotXi = LRUtil.betasDotXi(o.getX(), this.oldBetasWithBeta0);
                 double prob = LRUtil.calcProb(betasDotXi);
                 double probBounded = Math.min(1.0 - PROB_EPSILON, Math.max(PROB_EPSILON, prob));
@@ -283,7 +287,7 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
 
         public Boolean call() {
             for (int i = this.datasetRange.getStartIdx(); i < this.datasetRange.getEndIdx(); ++i) {
-                TJSparseObservation o = (TJSparseObservation) this.datasetRange.getDataset()[i];
+                SparseObservation o = (SparseObservation) this.datasetRange.getDataset()[i];
                 this.aj[0] += this.mi[i]; // a-term for intercept
                 this.cj_1[0] += this.mi[i] * this.zi[i]; // c-term first part for intercept
                 for (SparseArray.Entry xj : o.getX()) {
@@ -320,7 +324,7 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
         @Override
         public Boolean call() {
             for (int i = this.datasetRange.getStartIdx(); i < this.datasetRange.getEndIdx(); ++i) {
-                TJSparseObservation o = (TJSparseObservation) this.datasetRange.getDataset()[i];
+                SparseObservation o = (SparseObservation) this.datasetRange.getDataset()[i];
                 for (SparseArray.Entry xRowj : o.getX()) {
                     int j = xRowj.i + 1;
                     for (SparseArray.Entry xRowk : o.getX()) {

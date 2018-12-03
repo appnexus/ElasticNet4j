@@ -39,7 +39,7 @@ public class CoordinateDescentTrainerTest {
      * @return sparse observation
      * @throws Exception
      */
-    private static SparseObservation makeSparseObservation(int[] xIndices, double[] xValues, int y, int weight)
+    static SparseObservation makeSparseObservation(int[] xIndices, double[] xValues, int y, int weight)
         throws Exception {
         if (xIndices == null || xValues == null || xIndices.length != xValues.length) {
             throw new Exception("array lengths for x values and indices are unequal");
