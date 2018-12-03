@@ -34,7 +34,7 @@ public class LRResult implements Serializable {
     private double trainingEntropy;
     private long trainingTimeMillis;
 
-    // MetaData
+    // metadata
     private List<LRIterationMetadata> metaDataList;
     // Ephemeral fields
     private long miZiCalcMillis;

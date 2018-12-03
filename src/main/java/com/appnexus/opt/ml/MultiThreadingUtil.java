@@ -66,6 +66,8 @@ class DatasetRange {
 
 public class MultiThreadingUtil {
 
+    private static final int MT_EXEC_POOL_TIMEOUT_MS = 800;
+
     /**
      * wait for all threads pertaining to the completion service to complete
      *
@@ -117,7 +119,7 @@ public class MultiThreadingUtil {
     public static void closeExecutorPool(ExecutorService execPool) {
         execPool.shutdown();
         try {
-            if (!execPool.awaitTermination(LRConstants.MT_EXEC_POOL_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+            if (!execPool.awaitTermination(MT_EXEC_POOL_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
                 execPool.shutdownNow();
             }
         } catch (InterruptedException e) {

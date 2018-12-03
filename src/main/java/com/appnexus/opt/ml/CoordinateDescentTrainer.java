@@ -18,7 +18,6 @@ package com.appnexus.opt.ml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * This class implements a {@link IModelTrainer} that uses Coordinate Descent method to train Logistic Regression models
@@ -150,12 +149,12 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         double trainingEntropy;
         int iterations = 0;
         // Pre-processing: compute weighted covariance matrix
-        long weightedCovarCalcStartMillis = System.currentTimeMillis(); // split train-time metrics
+        long weightedCovarianceCalcStartMillis = System.currentTimeMillis();
         double[][] weightedCovarianceMatrix = getWeightedCovarianceMatrix(oldBetasWithBeta0.length, observations, mi);
-        long weightedCovarCalcEndMillis = System.currentTimeMillis(); // split train-time metrics
-        lrResult.setWeightedCovarCalcMillis(weightedCovarCalcEndMillis - weightedCovarCalcStartMillis);
+        long weightedCovarianceCalcEndMillis = System.currentTimeMillis();
+        lrResult.setWeightedCovarCalcMillis(weightedCovarianceCalcEndMillis - weightedCovarianceCalcStartMillis);
         // Update betas
-        long betasUpdateStartMillis = weightedCovarCalcEndMillis;
+        long betasUpdateStartMillis = weightedCovarianceCalcEndMillis;
         do {
             long startLoop = System.currentTimeMillis();
             newBetasWithBeta0 = Arrays.copyOf(oldBetasWithBeta0, oldBetasWithBeta0.length);
