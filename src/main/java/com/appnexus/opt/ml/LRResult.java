@@ -16,13 +16,16 @@
 
 package com.appnexus.opt.ml;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * This object represents the trained LR model for a specific set of training parameters. It also holds a list of {@link LRIterationMetadata} representing the intermediate results of each iteration during the training process
  */
-public class LRResult {
+public class LRResult implements Serializable {
+    private static final long serialVersionUID = 4817212848479794019L;
+
     private double alpha;
     private double lambda;
     private double[] betasWithBeta0;
@@ -32,7 +35,12 @@ public class LRResult {
     private long trainingTimeMillis;
 
     // MetaData
-    private List<LRIterationMetadata> metadataList;
+    private List<LRIterationMetadata> metaDataList;
+    // Ephemeral fields
+    private long miZiCalcMillis;
+    private long ajCj1CalcMillis;
+    private long weightedCovarCalcMillis;
+    private long betasUpdateMillis;
 
     public double getAlpha() {
         return alpha;
@@ -75,11 +83,11 @@ public class LRResult {
     }
 
     public List<LRIterationMetadata> getMetaDataList() {
-        return metadataList;
+        return metaDataList;
     }
 
-    public void setMetaDataList(List<LRIterationMetadata> metadataList) {
-        this.metadataList = metadataList;
+    public void setMetaDataList(List<LRIterationMetadata> metaDataList) {
+        this.metaDataList = metaDataList;
     }
 
     public long getTrainingTimeMillis() {
@@ -96,6 +104,42 @@ public class LRResult {
 
     public void setTrainingEntropy(double trainingEntropy) {
         this.trainingEntropy = trainingEntropy;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public long getMiZiCalcMillis() {
+        return this.miZiCalcMillis;
+    }
+
+    public void setMiZiCalcMillis(long miZiCalcMillis) {
+        this.miZiCalcMillis = miZiCalcMillis;
+    }
+
+    public long getAjCj1CalcMillis() {
+        return this.ajCj1CalcMillis;
+    }
+
+    public void setAjCj1CalcMillis(long ajCj1CalcMillis) {
+        this.ajCj1CalcMillis = ajCj1CalcMillis;
+    }
+
+    public long getWeightedCovarCalcMillis() {
+        return this.weightedCovarCalcMillis;
+    }
+
+    public void setWeightedCovarCalcMillis(long weightedCovarCalcMillis) {
+        this.weightedCovarCalcMillis = weightedCovarCalcMillis;
+    }
+
+    public long getBetasUpdateMillis() {
+        return this.betasUpdateMillis;
+    }
+
+    public void setBetasUpdateMillis(long betasUpdateMillis) {
+        this.betasUpdateMillis = betasUpdateMillis;
     }
 
     @Override
@@ -115,9 +159,10 @@ public class LRResult {
         builder.append(this.trainingEntropy);
         builder.append(", trainingTimeMillis=");
         builder.append(this.trainingTimeMillis);
-        builder.append(", metadataList=");
-        builder.append(this.metadataList);
+        builder.append(", metaDataList=");
+        builder.append(this.metaDataList);
         builder.append("]");
         return builder.toString();
     }
 }
+
