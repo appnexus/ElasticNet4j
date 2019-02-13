@@ -18,7 +18,6 @@ package com.appnexus.opt.ml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * This class implements a {@link IModelTrainer} that uses Coordinate Descent method to train Logistic Regression models
@@ -90,13 +89,14 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         double[] oldBetasWithBeta0, double alpha, double lambda, double[] lambdaScaleFactors, double tolerance,
         int maxIterations) {
         LRResult lrResult = new LRResult();
-        List<LRIterationMetadata> metadataList = new ArrayList<>();
+        ArrayList<LRIterationMetadata> metadataList = new ArrayList<>();
         lrResult.setMetaDataList(metadataList);
-        long start = System.currentTimeMillis();
+        long trainingTimeStartMillis = System.currentTimeMillis();
 
         /*
          * Calculate mi (current weight) and zi (current target) terms for each observation
          */
+        long miZiCalcStartMillis = trainingTimeStartMillis;
         double[] mi = new double[observations.length];
         double[] zi = new double[observations.length];
         for (int i = 0; i < observations.length; ++i) {
@@ -107,10 +107,13 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             mi[i] = wi * probBounded * (1 - probBounded);
             zi[i] = betasDotXi + (observations[i].getY() - wi * prob) / mi[i];
         }
+        long miZiCalcEndMillis = System.currentTimeMillis();
+        lrResult.setMiZiCalcMillis(miZiCalcEndMillis - miZiCalcStartMillis);
 
         /*
          * Calculate a-term and static c-term components for each beta weight
          */
+        long ajCj1CalcStartMillis = miZiCalcEndMillis;
         double[] aj = new double[oldBetasWithBeta0.length];
         double[] cjStaticTerm = new double[oldBetasWithBeta0.length];
         for (int i = 0; i < observations.length; ++i) {
@@ -127,6 +130,8 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             aj[j] /= totalWeights;
             cjStaticTerm[j] /= totalWeights;
         }
+        long ajCj1CalcEndMillis = System.currentTimeMillis();
+        lrResult.setAjCj1CalcMillis(ajCj1CalcEndMillis - ajCj1CalcStartMillis);
 
         /*
          * Update and refine betas until convergence
@@ -144,10 +149,12 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         double trainingEntropy;
         int iterations = 0;
         // Pre-processing: compute weighted covariance matrix
-        // long preProcStart = System.currentTimeMillis();
+        long weightedCovarianceCalcStartMillis = System.currentTimeMillis();
         double[][] weightedCovarianceMatrix = getWeightedCovarianceMatrix(oldBetasWithBeta0.length, observations, mi);
-        // long preProcEnd = System.currentTimeMillis();
+        long weightedCovarianceCalcEndMillis = System.currentTimeMillis();
+        lrResult.setWeightedCovarCalcMillis(weightedCovarianceCalcEndMillis - weightedCovarianceCalcStartMillis);
         // Update betas
+        long betasUpdateStartMillis = weightedCovarianceCalcEndMillis;
         do {
             long startLoop = System.currentTimeMillis();
             newBetasWithBeta0 = Arrays.copyOf(oldBetasWithBeta0, oldBetasWithBeta0.length);
@@ -199,7 +206,9 @@ public class CoordinateDescentTrainer implements IModelTrainer {
              */
             oldBetasWithBeta0 = Arrays.copyOf(newBetasWithBeta0, newBetasWithBeta0.length);
         } while (!LRUtil.hasConverged(maxAbsDifferencePct, tolerance) && iterations < maxIterations);
-        long trainingTimeMillis = System.currentTimeMillis() - start;
+        long betasUpdateEndMillis = System.currentTimeMillis();
+        lrResult.setBetasUpdateMillis(betasUpdateEndMillis - betasUpdateStartMillis);
+        long trainingTimeEndMillis = System.currentTimeMillis();
 
         /*
          * Create LRResult
@@ -210,7 +219,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         lrResult.setMaxAbsDifferencePct(maxAbsDifferencePct);
         lrResult.setTrainingEntropy(trainingEntropy);
         lrResult.setBetasWithBeta0(newBetasWithBeta0);
-        lrResult.setTrainingTimeMillis(trainingTimeMillis);
+        lrResult.setTrainingTimeMillis(trainingTimeEndMillis - trainingTimeStartMillis);
         return lrResult;
     }
 }

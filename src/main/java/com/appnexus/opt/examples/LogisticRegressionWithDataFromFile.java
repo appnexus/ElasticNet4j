@@ -44,6 +44,7 @@ class SparseObservationDataFromFile {
     }
 }
 
+
 /*
  * This file demonstrates an example use of the library by reading sample training and testing data from a file,
  * training a Logistic Regression model using the training set and evaluating its performance on the testing set.

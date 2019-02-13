@@ -115,7 +115,7 @@ public class LRUtil {
     /**
      * Generate Scale Factors for scaling lambda for each beta[j]
      *
-     * @param trainingObsArr training observation array
+     * @param trainingObsArr   training observation array
      * @param featureVectorLen length of feature vector
      * @return
      */
