@@ -9,8 +9,8 @@ pipeline {
   }
 
   environment {
-    APP_NAME = 'tj-valuation'
-    APP_REPO = 'app/tj-valuation'
+    APP_NAME = 'mllib'
+    APP_REPO = 'library/mllib'
     APP_ARTIFACTORY_DEPLOY_CREDENTIALS_ID = 'artifactory-deploy'
     APP_ARTIFACTORY_PROMOTE_CREDENTIALS_ID = '0dbbef00-aaab-4a64-8ee4-e057ef13d08e'
   }
