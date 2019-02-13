@@ -1,6 +1,5 @@
 package com.appnexus.opt.ml;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,9 +28,9 @@ public class CoordinateDescentTrainerMTTest {
 
         SparseObservation[] soArr = {so1, so2, so3};
         double[] mi = {1, 1, 1};
-        CoordinateDescentTrainerMT coordinateDescentTrainerMT = new CoordinateDescentTrainerMT(completionService, numTrainingThreads);
-        double[][] weightedCovarianceMatrix = coordinateDescentTrainerMT
-            .getWeightedCovarianceMatrix(11, soArr, mi);
+        CoordinateDescentTrainerMT coordinateDescentTrainerMT = new CoordinateDescentTrainerMT(completionService,
+            numTrainingThreads);
+        double[][] weightedCovarianceMatrix = coordinateDescentTrainerMT.getWeightedCovarianceMatrix(11, soArr, mi);
 
         MultiThreadingUtil.closeExecutorPool(execPool);
 

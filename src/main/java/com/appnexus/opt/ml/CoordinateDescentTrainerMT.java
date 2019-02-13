@@ -37,6 +37,24 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
         this.numTrainingThreads = numTrainingThreads;
     }
 
+    /**
+     * Calculate the Cj term. This is re-computed after calculating every 'j'th beta
+     *
+     * @param j                        index of the 'j'th beta starting from beta0
+     * @param weightedCovarianceMatrix mi weighted covariance matrix with diagonal terms zeroed out
+     * @param currentBetasWithBeta0    current betas with beta0
+     * @param cjStaticTerm             cjStaticTerm[0] += mi[i] * zi[i] / W; AND cjStaticTerm[j + 1] += mi[i] * xij * zi[i] / W; // c-terms first part
+     * @param totalWeights             sum of all weights / total trials
+     */
+    static double calculateCj2(int j, double[][] weightedCovarianceMatrix, double[] currentBetasWithBeta0,
+        double cjStaticTerm, double totalWeights) {
+        double residual = 0;
+        for (int k = 0; k < currentBetasWithBeta0.length; ++k) {
+            residual += weightedCovarianceMatrix[j][k] * currentBetasWithBeta0[k];
+        }
+        return cjStaticTerm - residual / totalWeights;
+    }
+
     @Override
     public LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights,
         double[] oldBetasWithBeta0, double alpha, double lambda, double[] lambdaScaleFactors, double tolerance,
@@ -194,24 +212,6 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
         lrResult.setTrainingTimeMillis(trainingTimeMillis);
 
         return lrResult;
-    }
-
-    /**
-     * Calculate the Cj term. This is re-computed after calculating every 'j'th beta
-     *
-     * @param j                        index of the 'j'th beta starting from beta0
-     * @param weightedCovarianceMatrix mi weighted covariance matrix with diagonal terms zeroed out
-     * @param currentBetasWithBeta0    current betas with beta0
-     * @param cjStaticTerm             cjStaticTerm[0] += mi[i] * zi[i] / W; AND cjStaticTerm[j + 1] += mi[i] * xij * zi[i] / W; // c-terms first part
-     * @param totalWeights             sum of all weights / total trials
-     */
-    static double calculateCj2(int j, double[][] weightedCovarianceMatrix, double[] currentBetasWithBeta0,
-        double cjStaticTerm, double totalWeights) {
-        double residual = 0;
-        for (int k = 0; k < currentBetasWithBeta0.length; ++k) {
-            residual += weightedCovarianceMatrix[j][k] * currentBetasWithBeta0[k];
-        }
-        return cjStaticTerm - residual / totalWeights;
     }
 
     /**

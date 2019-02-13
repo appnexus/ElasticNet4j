@@ -42,6 +42,10 @@ public class LRResult implements Serializable {
     private long weightedCovarCalcMillis;
     private long betasUpdateMillis;
 
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
     public double getAlpha() {
         return alpha;
     }
@@ -104,10 +108,6 @@ public class LRResult implements Serializable {
 
     public void setTrainingEntropy(double trainingEntropy) {
         this.trainingEntropy = trainingEntropy;
-    }
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
     }
 
     public long getMiZiCalcMillis() {
