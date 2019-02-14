@@ -15,21 +15,21 @@ public class DatasetRange {
      * @param endIdx   end index
      * @param dataset  entire dataset to operate on
      */
-    DatasetRange(int startIdx, int endIdx, Object[] dataset) {
+    public DatasetRange(int startIdx, int endIdx, Object[] dataset) {
         this.startIdx = startIdx;
         this.endIdx = endIdx;
         this.dataset = dataset;
     }
 
-    int getStartIdx() {
+    public int getStartIdx() {
         return this.startIdx;
     }
 
-    int getEndIdx() {
+    public int getEndIdx() {
         return this.endIdx;
     }
 
-    Object[] getDataset() {
+    public Object[] getDataset() {
         return this.dataset;
     }
 

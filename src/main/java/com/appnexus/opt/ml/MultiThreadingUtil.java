@@ -14,7 +14,7 @@ public class MultiThreadingUtil {
      * @param completionService completion service
      * @param numThreads        number of threads
      */
-    static void waitForThreadCompletion(CompletionService<Boolean> completionService, int numThreads) {
+    public static void waitForThreadCompletion(CompletionService<Boolean> completionService, int numThreads) {
         int received = 0;
         while (received < numThreads) {
             try {
@@ -31,7 +31,7 @@ public class MultiThreadingUtil {
      * @param numThreads number of threads
      * @return list of dataset ranges indicating indices by which to partition data
      */
-    static List<DatasetRange> splitDatasetIntoRanges(Object[] dataset, int numThreads) {
+    public static List<DatasetRange> splitDatasetIntoRanges(Object[] dataset, int numThreads) {
         List<DatasetRange> datasetRanges = new LinkedList<>();
         int lengthOfDatasetRange = dataset.length / numThreads;
         int numDatasetRange = 0;
@@ -49,7 +49,7 @@ public class MultiThreadingUtil {
      * @param completionService completion service
      * @param task              task
      */
-    static void submitTask(CompletionService<Boolean> completionService, Callable<Boolean> task) {
+    public static void submitTask(CompletionService<Boolean> completionService, Callable<Boolean> task) {
         completionService.submit(task);
     }
 
