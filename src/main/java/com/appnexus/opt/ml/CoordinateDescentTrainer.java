@@ -18,6 +18,7 @@ package com.appnexus.opt.ml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class implements a {@link IModelTrainer} that uses Coordinate Descent method to train Logistic Regression models
@@ -51,15 +52,15 @@ public class CoordinateDescentTrainer implements IModelTrainer {
      * @param mi           weights
      * @return weighted covariance matrix of observation data
      */
-    static double[][] getWeightedCovarianceMatrix(int size, SparseObservation[] observations, double[] mi) {
+    static double[][] getWeightedCovarianceMatrix(int size, List<SparseObservation> observations, double[] mi) {
         double[][] weightedCovarianceMatrix = new double[size][size];
-        for (int i = 0; i < observations.length; ++i) {
+        for (int i = 0; i < observations.size(); ++i) {
             /*
              * compute sum of Xj * Xk where j < k note: matrix is symmetrical
              */
-            for (SparseArray.Entry xRowj : observations[i].getX()) {
+            for (SparseArray.Entry xRowj : observations.get(i).getX()) {
                 int j = xRowj.i + 1;
-                for (SparseArray.Entry xRowk : observations[i].getX()) {
+                for (SparseArray.Entry xRowk : observations.get(i).getX()) {
                     int k = xRowk.i + 1;
                     if (j < k) {
                         double value = mi[i] * xRowj.x * xRowk.x;
@@ -71,7 +72,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
             /*
              * add in the entries of the matrix for the 0th row and the 0th column (i.e. beta 0) note: beta0 will always have an X value of 1 since it's "always present"
              */
-            for (SparseArray.Entry xRowj : observations[i].getX()) {
+            for (SparseArray.Entry xRowj : observations.get(i).getX()) {
                 int j = xRowj.i + 1;
                 if (j != 0) {
                     double value = mi[i] * xRowj.x * 1;
@@ -85,7 +86,7 @@ public class CoordinateDescentTrainer implements IModelTrainer {
     }
 
     @Override
-    public LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights,
+    public LRResult trainNewBetasWithBeta0(List<SparseObservation> observations, double totalWeights,
         double[] oldBetasWithBeta0, double alpha, double lambda, double[] lambdaScaleFactors, double tolerance,
         int maxIterations) {
         LRResult lrResult = new LRResult();
@@ -97,15 +98,15 @@ public class CoordinateDescentTrainer implements IModelTrainer {
          * Calculate mi (current weight) and zi (current target) terms for each observation
          */
         long miZiCalcStartMillis = trainingTimeStartMillis;
-        double[] mi = new double[observations.length];
-        double[] zi = new double[observations.length];
-        for (int i = 0; i < observations.length; ++i) {
-            double betasDotXi = LRUtil.betasDotXi(observations[i].getX(), oldBetasWithBeta0);
+        double[] mi = new double[observations.size()];
+        double[] zi = new double[observations.size()];
+        for (int i = 0; i < observations.size(); ++i) {
+            double betasDotXi = LRUtil.betasDotXi(observations.get(i).getX(), oldBetasWithBeta0);
             double prob = LRUtil.calcProb(betasDotXi);
             double probBounded = Math.min(1.0 - PROB_EPSILON, Math.max(PROB_EPSILON, prob));
-            double wi = observations[i].getWeight();
+            double wi = observations.get(i).getWeight();
             mi[i] = wi * probBounded * (1 - probBounded);
-            zi[i] = betasDotXi + (observations[i].getY() - wi * prob) / mi[i];
+            zi[i] = betasDotXi + (observations.get(i).getY() - wi * prob) / mi[i];
         }
         long miZiCalcEndMillis = System.currentTimeMillis();
         lrResult.setMiZiCalcMillis(miZiCalcEndMillis - miZiCalcStartMillis);
@@ -116,10 +117,10 @@ public class CoordinateDescentTrainer implements IModelTrainer {
         long ajCj1CalcStartMillis = miZiCalcEndMillis;
         double[] aj = new double[oldBetasWithBeta0.length];
         double[] cjStaticTerm = new double[oldBetasWithBeta0.length];
-        for (int i = 0; i < observations.length; ++i) {
+        for (int i = 0; i < observations.size(); ++i) {
             aj[0] += mi[i]; // a-term for intercept
             cjStaticTerm[0] += mi[i] * zi[i]; // c-term first part for intercept
-            for (SparseArray.Entry xj : observations[i].getX()) {
+            for (SparseArray.Entry xj : observations.get(i).getX()) {
                 int j = xj.i;
                 double xij = xj.x;
                 aj[j + 1] += mi[i] * xij * xij; // a-terms

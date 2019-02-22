@@ -16,6 +16,9 @@
 
 package com.appnexus.opt.ml;
 
+import com.appnexus.opt.concurrent.DatasetRange;
+import com.appnexus.opt.concurrent.MultiThreadingUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -56,7 +59,7 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
     }
 
     @Override
-    public LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights,
+    public LRResult trainNewBetasWithBeta0(List<SparseObservation> observations, double totalWeights,
         double[] oldBetasWithBeta0, double alpha, double lambda, double[] lambdaScaleFactors, double tolerance,
         int maxIterations) {
         LRResult lrResult = new LRResult();
@@ -73,8 +76,8 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
         long start = System.currentTimeMillis();
         long miZiCalcStartMillis = start; // split train-time metrics
 
-        double[] mi = new double[observations.length];
-        double[] zi = new double[observations.length];
+        double[] mi = new double[observations.size()];
+        double[] zi = new double[observations.size()];
 
         for (DatasetRange datasetRange : datasetRanges) {
             MiZiTask miZiTask = new MiZiTask(datasetRange, oldBetasWithBeta0, mi, zi);
@@ -222,7 +225,7 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
      * @param mi           Current Weights
      * @return covarianceMatrix
      */
-    double[][] getWeightedCovarianceMatrix(int size, SparseObservation[] observations, double[] mi) {
+    double[][] getWeightedCovarianceMatrix(int size, List<SparseObservation> observations, double[] mi) {
 
         List<double[][]> covarianceMatrixResults = new LinkedList<>();
 
@@ -270,7 +273,7 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
         @Override
         public Boolean call() {
             for (int i = this.datasetRange.getStartIdx(); i < this.datasetRange.getEndIdx(); ++i) {
-                SparseObservation o = (SparseObservation) this.datasetRange.getDataset()[i];
+                SparseObservation o = (SparseObservation) this.datasetRange.getDataset().get(i);
                 double betasDotXi = LRUtil.betasDotXi(o.getX(), this.oldBetasWithBeta0);
                 double prob = LRUtil.calcProb(betasDotXi);
                 double probBounded = Math.min(1.0 - PROB_EPSILON, Math.max(PROB_EPSILON, prob));
@@ -306,7 +309,7 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
 
         public Boolean call() {
             for (int i = this.datasetRange.getStartIdx(); i < this.datasetRange.getEndIdx(); ++i) {
-                SparseObservation o = (SparseObservation) this.datasetRange.getDataset()[i];
+                SparseObservation o = (SparseObservation) this.datasetRange.getDataset().get(i);
                 this.aj[0] += this.mi[i]; // a-term for intercept
                 this.cj_1[0] += this.mi[i] * this.zi[i]; // c-term first part for intercept
                 for (SparseArray.Entry xj : o.getX()) {
@@ -343,7 +346,7 @@ public class CoordinateDescentTrainerMT implements IModelTrainer {
         @Override
         public Boolean call() {
             for (int i = this.datasetRange.getStartIdx(); i < this.datasetRange.getEndIdx(); ++i) {
-                SparseObservation o = (SparseObservation) this.datasetRange.getDataset()[i];
+                SparseObservation o = (SparseObservation) this.datasetRange.getDataset().get(i);
                 for (SparseArray.Entry xRowj : o.getX()) {
                     int j = xRowj.i + 1;
                     for (SparseArray.Entry xRowk : o.getX()) {

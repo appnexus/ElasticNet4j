@@ -27,15 +27,15 @@ import java.util.List;
 
 class SparseObservationDataFromFile {
 
-    private SparseObservation[] sparseObservations;
+    private List<SparseObservation> sparseObservations;
     private int numOfFeatures;
 
-    SparseObservationDataFromFile(SparseObservation[] sparseObservations, int numOfFeatures) {
+    SparseObservationDataFromFile(List<SparseObservation> sparseObservations, int numOfFeatures) {
         this.sparseObservations = sparseObservations;
         this.numOfFeatures = numOfFeatures;
     }
 
-    SparseObservation[] getSparseObservations() {
+    List<SparseObservation> getSparseObservations() {
         return sparseObservations;
     }
 
@@ -70,14 +70,14 @@ public class LogisticRegressionWithDataFromFile {
 
         /* Read sparse observation data from file */
         SparseObservationDataFromFile sparseObservationDataFromFile = readSparseObservationsFromFile();
-        SparseObservation[] observations = sparseObservationDataFromFile.getSparseObservations();
+        List<SparseObservation> observations = sparseObservationDataFromFile.getSparseObservations();
         int numOfFeatures = sparseObservationDataFromFile.getNumOfFeatures();
         /* Generate a grid of lambda tuning parameters using the metadata above. */
         double[] lambdaGrid = LRUtil.getLambdaGrid(lambdaSize, lambdaStart, lambdaEnd);
         /* Use TRAINING_PCT percentage of data as training data for our algorithm. The remainder is data to test our algorithm. */
-        int splitIdx = (int) (TRAINING_PCT * observations.length);
-        SparseObservation[] trainObservations = Arrays.copyOfRange(observations, 0, splitIdx);
-        SparseObservation[] testObservations = Arrays.copyOfRange(observations, splitIdx, observations.length);
+        int splitIdx = (int) (TRAINING_PCT * observations.size());
+        List<SparseObservation> trainObservations = observations.subList(0, splitIdx);
+        List<SparseObservation> testObservations = observations.subList(splitIdx, observations.size());
         /* Generate lambda scale factors for the training algorithm. */
         double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(trainObservations, numOfFeatures);
         /* Generate an initial beta weight vector that will be updated by the training algorithm per iteration. */
@@ -131,9 +131,7 @@ public class LogisticRegressionWithDataFromFile {
                 }
             }
         }
-        SparseObservation[] observations = new SparseObservation[obsList.size()];
-        obsList.toArray(observations);
-        return new SparseObservationDataFromFile(observations, numOfFeatures);
+        return new SparseObservationDataFromFile(obsList, numOfFeatures);
     }
 
     /*

@@ -16,6 +16,8 @@
 
 package com.appnexus.opt.ml;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class LRTestUtils {
@@ -28,7 +30,7 @@ public class LRTestUtils {
     private static final double DEFAULT_BETA_0 = -3;
     private static final double BETA_MAX = 1.5; // -1.5 to 1.5
 
-    public static SparseObservation[] createTestData(int numOfObservations, int numOfFeatures, double sparsePct,
+    public static List<SparseObservation> createTestData(int numOfObservations, int numOfFeatures, double sparsePct,
         long colSeed, long betaSeed, long dataSeed, long weightSeed) {
         int numOfNonZeroFeatures = (int) (sparsePct * numOfFeatures);
 
@@ -50,11 +52,11 @@ public class LRTestUtils {
 
         // Make observations
         Random weightRn = new Random(weightSeed);
-        SparseObservation[] obs = new SparseObservation[numOfObservations];
+        List<SparseObservation> obs = new LinkedList<>();
         for (int i = 0; i < numOfObservations; ++i) {
             int weight = 50 + weightRn.nextInt(50);
             double y = weight * LRUtil.expit(LRUtil.betasDotXi(featureVecs[i], betasWithBeta0));
-            obs[i] = new SparseObservation(featureVecs[i], y, weight);
+            obs.add(new SparseObservation(featureVecs[i], y, weight));
         }
         return obs;
     }

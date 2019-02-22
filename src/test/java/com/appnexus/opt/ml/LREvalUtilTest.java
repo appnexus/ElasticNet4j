@@ -19,6 +19,9 @@ package com.appnexus.opt.ml;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class LREvalUtilTest {
 
     @Test
@@ -32,9 +35,12 @@ public class LREvalUtilTest {
         int[] xi3 = {3, 4, 5, 6, 7};
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = LRUtilTest.makeTjSparseObservation(xi3, xv3, 0, 10);
-        SparseObservation[] soArr = {so1, so2, so3};
+        List<SparseObservation> obs = new LinkedList<>();
+        obs.add(so1);
+        obs.add(so2);
+        obs.add(so3);
         double[] betasWithBeta0 = LRTestUtils.makeBetas(11, 99);
-        Assert.assertEquals(LREvalUtil.getEntropy(soArr, betasWithBeta0), 591.34, 0.01);
+        Assert.assertEquals(LREvalUtil.getEntropy(obs, betasWithBeta0), 591.34, 0.01);
     }
 
     @Test
@@ -48,9 +54,12 @@ public class LREvalUtilTest {
         int[] xi3 = {3, 4, 5, 6, 7};
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = LRUtilTest.makeTjSparseObservation(xi3, xv3, 0, 10);
-        SparseObservation[] soArr = {so1, so2, so3};
+        List<SparseObservation> obs = new LinkedList<>();
+        obs.add(so1);
+        obs.add(so2);
+        obs.add(so3);
         double[] betasWithBeta0 = LRTestUtils.makeBetas(11, 99);
-        Assert.assertEquals(LREvalUtil.getEntropyNormalized(soArr, betasWithBeta0), 19.7114, 0.01);
+        Assert.assertEquals(LREvalUtil.getEntropyNormalized(obs, betasWithBeta0), 19.7114, 0.01);
     }
 
     @Test
