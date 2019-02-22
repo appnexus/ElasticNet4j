@@ -33,6 +33,13 @@ public class SparseArray implements Iterable<SparseArray.Entry>, Serializable {
         this(10);
     }
 
+    public SparseArray(Iterable<? extends SparseArray.Entry> iterable) {
+        this();
+        for (SparseArray.Entry e : iterable) {
+            this.append(e.i, e.x);
+        }
+    }
+
     private SparseArray(int initialCapacity) {
         array = new ArrayList<>(initialCapacity);
     }
