@@ -29,13 +29,13 @@ public class SparseObservation {
     }
 
     public SparseObservation(SparseArray x, double y, int weight) {
-        this.x = new SparseArray(x); // defensive copy
+        this.x = x;
         this.y = y;
         this.weight = weight;
     }
 
     public SparseArray getX() {
-        return new SparseArray(this.x); // defensive copy
+        return this.x;
     }
 
     public int getWeight() {
