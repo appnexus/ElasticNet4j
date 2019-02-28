@@ -20,6 +20,9 @@ import com.appnexus.opt.ml.LRUtil;
 import com.appnexus.opt.ml.SparseArray;
 import com.appnexus.opt.ml.SparseObservation;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class ExamplesUtil {
@@ -51,7 +54,7 @@ public class ExamplesUtil {
      * @param weightSeed        weight seed
      * @return generated test data
      */
-    public static SparseObservation[] createTestData(int numOfObservations, int numOfFeatures, double sparsePct,
+    public static List<SparseObservation> createTestData(int numOfObservations, int numOfFeatures, double sparsePct,
         long colSeed, long betaSeed, long dataSeed, long weightSeed) {
 
         // feature vectors
@@ -74,11 +77,11 @@ public class ExamplesUtil {
 
         // make observation
         Random weightRn = new Random(weightSeed);
-        SparseObservation[] obs = new SparseObservation[numOfObservations];
+        List<SparseObservation> obs = new ArrayList<>();
         for (int i = 0; i < numOfObservations; ++i) {
             int weight = 50 + weightRn.nextInt(50);
             double y = weight * LRUtil.expit(LRUtil.betasDotXi(featureVectors[i], betasWithBeta0));
-            obs[i] = new SparseObservation(featureVectors[i], y, weight);
+            obs.add(new SparseObservation(featureVectors[i], y, weight));
         }
         return obs;
     }
@@ -88,10 +91,8 @@ public class ExamplesUtil {
      */
 
     public static void main(String[] args) {
-        SparseObservation[] testObservations = createTestData(10, 5, 0.5, 99, 99, 99, 99);
-        for (SparseObservation observation : testObservations) {
-            System.out.println(observation);
-        }
+        List<SparseObservation> testObservations = createTestData(10, 5, 0.5, 99, 99, 99, 99);
+        testObservations.forEach(System.out::println);
     }
 
 }

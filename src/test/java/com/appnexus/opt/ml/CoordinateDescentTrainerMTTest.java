@@ -1,8 +1,11 @@
 package com.appnexus.opt.ml;
 
+import com.appnexus.opt.concurrent.MultiThreadingUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -26,11 +29,14 @@ public class CoordinateDescentTrainerMTTest {
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = CoordinateDescentTrainerTest.makeSparseObservation(xi3, xv3, 0, 10);
 
-        SparseObservation[] soArr = {so1, so2, so3};
+        List<SparseObservation> obs = new LinkedList<>();
+        obs.add(so1);
+        obs.add(so2);
+        obs.add(so3);
         double[] mi = {1, 1, 1};
         CoordinateDescentTrainerMT coordinateDescentTrainerMT = new CoordinateDescentTrainerMT(completionService,
             numTrainingThreads);
-        double[][] weightedCovarianceMatrix = coordinateDescentTrainerMT.getWeightedCovarianceMatrix(11, soArr, mi);
+        double[][] weightedCovarianceMatrix = coordinateDescentTrainerMT.getWeightedCovarianceMatrix(11, obs, mi);
 
         MultiThreadingUtil.closeExecutorPool(execPool);
 

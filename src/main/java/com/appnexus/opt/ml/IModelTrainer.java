@@ -16,6 +16,8 @@
 
 package com.appnexus.opt.ml;
 
+import java.util.List;
+
 /**
  * This interface declares the functions that need to be defined to create a new ModelTrainer class
  */
@@ -34,6 +36,6 @@ public interface IModelTrainer {
      * @param maxIterations      max iterations
      * @return new Betas trained for this iteration
      */
-    LRResult trainNewBetasWithBeta0(SparseObservation[] observations, double totalWeights, double[] oldBetasWithBeta0,
+    LRResult trainNewBetasWithBeta0(List<SparseObservation> observations, double totalWeights, double[] oldBetasWithBeta0,
         double alpha, double lambda, double[] lambdaScaleFactors, double tolerance, int maxIterations);
 }

@@ -21,6 +21,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CoordinateDescentTrainerTest {
@@ -85,9 +86,12 @@ public class CoordinateDescentTrainerTest {
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = makeSparseObservation(xi3, xv3, 0, 10);
 
-        SparseObservation[] soArr = {so1, so2, so3};
+        List<SparseObservation> obs = new LinkedList<>();
+        obs.add(so1);
+        obs.add(so2);
+        obs.add(so3);
         double[] mi = {1, 1, 1};
-        double[][] weightedCovarMatrix = CoordinateDescentTrainer.getWeightedCovarianceMatrix(11, soArr, mi);
+        double[][] weightedCovarMatrix = CoordinateDescentTrainer.getWeightedCovarianceMatrix(11, obs, mi);
 
         double[] expectedCol0 = {0.0, 0.0, 1.0, 2.0, 6.0, 8.0, 5.0, 12.0, 14.0, 8.0, 9.0};
         double[] expectedCol1 = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -134,7 +138,7 @@ public class CoordinateDescentTrainerTest {
         int numOfUniqueObservations = 1000;
         int numOfFeatures = 200;
         int maxIterations = 1000;
-        SparseObservation[] obs = LRTestUtils
+        List<SparseObservation> obs = LRTestUtils
             .createTestData(numOfUniqueObservations, numOfFeatures, SPARCE_PCT, COL_SEED, BETA_SEED, DATA_SEED,
                 WEIGHT_SEED);
         double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(obs, numOfFeatures);

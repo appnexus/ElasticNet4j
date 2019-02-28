@@ -19,6 +19,9 @@ package com.appnexus.opt.ml;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class LRUtilTest {
     public static final int MT_LAMBDA_GRID_SIZE = 64;
     public static final double MT_LAMBDA_GRID_START = -5;
@@ -117,9 +120,12 @@ public class LRUtilTest {
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = makeTjSparseObservation(xi3, xv3, 0, 10);
 
-        SparseObservation[] soArr = {so1, so2, so3};
+        List<SparseObservation> obs = new LinkedList<>();
+        obs.add(so1);
+        obs.add(so2);
+        obs.add(so3);
 
-        double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(soArr, 11);
+        double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(obs, 11);
         double[] expectedLambdaScaleFactors = {0.03333333333333333, 0.16666666666666666, 0.16666666666666666,
             0.16666666666666666, 0.16666666666666666, 0.03333333333333333, 0.16666666666666666, 0.16666666666666666,
             0.16666666666666666, 0.16666666666666666, 0.03333333333333333};

@@ -25,9 +25,7 @@ public class SparseObservation {
     private final int weight;
 
     public SparseObservation(SparseArray x, double y) {
-        this.x = x;
-        this.y = y;
-        this.weight = 1;
+        this(x, y, 1);
     }
 
     public SparseObservation(SparseArray x, double y, int weight) {
