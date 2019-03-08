@@ -1,5 +1,6 @@
 package com.appnexus.opt.ml;
 
+import com.appnexus.opt.concurrent.MultiThreadingUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -16,6 +16,9 @@
 
 package com.appnexus.opt.ml;
 
+import com.appnexus.opt.concurrent.DatasetRange;
+import com.appnexus.opt.concurrent.MultiThreadingUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
