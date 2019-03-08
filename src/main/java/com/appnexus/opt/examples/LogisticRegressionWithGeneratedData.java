@@ -48,14 +48,14 @@ public class LogisticRegressionWithGeneratedData {
         int lambdaStart = 1;            // start for lambda tuning parameters for training
         int lambdaEnd = 17;             // end for lambda tuning parameters for training
         /* Generate observations using the metadata above. */
-        List<SparseObservation> observations = ExamplesUtil
+        SparseObservation[] observations = ExamplesUtil
             .createTestData(numOfObservations, numOfFeatures, SPARSE_PCT, COL_SEED, BETA_SEED, DATA_SEED, WEIGHT_SEED);
         /* Generate a grid of lambda tuning parameters using the metadata above. */
         double[] lambdaGrid = LRUtil.getLambdaGrid(lambdaSize, lambdaStart, lambdaEnd);
         /* Use TRAINING_PCT percentage of data as training data for our algorithm. The remainder is data to test our algorithm. */
-        int splitIdx = (int) (TRAINING_PCT * observations.size());
-        List<SparseObservation> trainObservations = observations.subList(0, splitIdx);
-        List<SparseObservation> testObservations = observations.subList(splitIdx, observations.size());
+        int splitIdx = (int) (TRAINING_PCT * observations.length);
+        SparseObservation[] trainObservations = Arrays.copyOfRange(observations, 0, splitIdx);
+        SparseObservation[] testObservations = Arrays.copyOfRange(observations, splitIdx, observations.length);
         /* Generate lambda scale factors for the training algorithm. */
         double[] lambdaScaleFactors = LRUtil.generateLambdaScaleFactors(trainObservations, numOfFeatures);
         /* Generate an initial beta weight vector that will be updated by the training algorithm per iteration. */

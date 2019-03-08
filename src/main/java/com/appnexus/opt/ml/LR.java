@@ -18,13 +18,12 @@ package com.appnexus.opt.ml;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This class is the entry point into using the LR training functionality
  */
 public class LR {
-    private final List<SparseObservation> observations; // contains x, y and weight but does not contain entries for beta0
+    private final SparseObservation[] observations; // contains x, y and weight but does not contain entries for beta0
     private final int numOfFeatures;
     private final double totalSuccesses;
     private final double totalWeights;
@@ -36,7 +35,7 @@ public class LR {
     private final int maxIterations;
     private final IModelTrainer modelTrainer;
 
-    public LR(List<SparseObservation> observations, int numOfFeatures, double[] initialBetasWithBeta0, double alpha,
+    public LR(SparseObservation[] observations, int numOfFeatures, double[] initialBetasWithBeta0, double alpha,
         double[] lambdaGrid, double[] lambdaScaleFactors, double tolerance, int maxIterations,
         IModelTrainer modelTrainer) {
         this.observations = observations;
@@ -56,7 +55,7 @@ public class LR {
      * @param observations observations
      * @return total success across observations
      */
-    static double getTotalSuccesses(List<SparseObservation> observations) {
+    static double getTotalSuccesses(SparseObservation[] observations) {
         double totalSuccesses = 0;
         for (SparseObservation obs : observations) {
             totalSuccesses += obs.getY();
@@ -68,7 +67,7 @@ public class LR {
      * @param observations observations
      * @return total weights across observations
      */
-    static double getTotalWeights(List<SparseObservation> observations) {
+    static double getTotalWeights(SparseObservation[] observations) {
         double totalWeights = 0;
         for (SparseObservation obs : observations) {
             totalWeights += obs.getWeight();

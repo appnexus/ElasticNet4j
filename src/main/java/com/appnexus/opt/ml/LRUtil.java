@@ -16,8 +16,6 @@
 
 package com.appnexus.opt.ml;
 
-import java.util.List;
-
 /**
  * This class provides static utility methods to calculate commonly used terms and quantities in model computation
  */
@@ -121,7 +119,7 @@ public class LRUtil {
      * @param featureVectorLen length of feature vector
      * @return
      */
-    public static double[] generateLambdaScaleFactors(List<SparseObservation> trainingObsArr, int featureVectorLen) {
+    public static double[] generateLambdaScaleFactors(SparseObservation[] trainingObsArr, int featureVectorLen) {
         double[] lambdaScaleFactors = new double[featureVectorLen];
         double totalWeight = 0;
         for (SparseObservation trainingObs : trainingObsArr) {

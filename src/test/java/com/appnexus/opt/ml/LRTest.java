@@ -19,9 +19,6 @@ package com.appnexus.opt.ml;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class LRTest {
 
     @Test
@@ -35,11 +32,8 @@ public class LRTest {
         int[] xi3 = {3, 4, 5, 6, 7};
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = LRUtilTest.makeTjSparseObservation(xi3, xv3, 0, 10);
-        List<SparseObservation> obs = new LinkedList<>();
-        obs.add(so1);
-        obs.add(so2);
-        obs.add(so3);
-        LR lr = new LR(obs, 10, new double[] {}, 0, new double[] {}, new double[] {}, 0, 0,
+        SparseObservation[] soArr = {so1, so2, so3};
+        LR lr = new LR(soArr, 10, new double[] {}, 0, new double[] {}, new double[] {}, 0, 0,
             new CoordinateDescentTrainer());
         double[] actualBetas = new double[] {-0.6931, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         Assert.assertArrayEquals(lr.getInitialBetasWithBeta0(null), actualBetas, 0.01);
@@ -57,11 +51,8 @@ public class LRTest {
         int[] xi3 = {3, 4, 5, 6, 7};
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = LRUtilTest.makeTjSparseObservation(xi3, xv3, 0, 10);
-        List<SparseObservation> obs = new LinkedList<>();
-        obs.add(so1);
-        obs.add(so2);
-        obs.add(so3);
-        LR lr = new LR(obs, 11, new double[] {}, 0, new double[] {}, new double[] {}, 0, 0,
+        SparseObservation[] soArr = {so1, so2, so3};
+        LR lr = new LR(soArr, 11, new double[] {}, 0, new double[] {}, new double[] {}, 0, 0,
             new CoordinateDescentTrainer());
         Assert.assertEquals(lr.guessInitialBetaZero(), -0.6931, 0.01);
     }
@@ -77,11 +68,8 @@ public class LRTest {
         int[] xi3 = {3, 4, 5, 6, 7};
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = LRUtilTest.makeTjSparseObservation(xi3, xv3, 0, 10);
-        List<SparseObservation> obs = new LinkedList<>();
-        obs.add(so1);
-        obs.add(so2);
-        obs.add(so3);
-        Assert.assertEquals(LR.getTotalSuccesses(obs), 10, 1e-10);
+        SparseObservation[] soArr = {so1, so2, so3};
+        Assert.assertEquals(LR.getTotalSuccesses(soArr), 10, 1e-10);
     }
 
     @Test
@@ -95,10 +83,7 @@ public class LRTest {
         int[] xi3 = {3, 4, 5, 6, 7};
         double[] xv3 = {3, 4, 5, 6, 7};
         SparseObservation so3 = LRUtilTest.makeTjSparseObservation(xi3, xv3, 0, 10);
-        List<SparseObservation> obs = new LinkedList<>();
-        obs.add(so1);
-        obs.add(so2);
-        obs.add(so3);
-        Assert.assertEquals(LR.getTotalWeights(obs), 30, 1e-10);
+        SparseObservation[] soArr = {so1, so2, so3};
+        Assert.assertEquals(LR.getTotalWeights(soArr), 30, 1e-10);
     }
 }

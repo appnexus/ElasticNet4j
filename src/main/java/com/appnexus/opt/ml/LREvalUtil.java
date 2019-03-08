@@ -16,8 +16,6 @@
 
 package com.appnexus.opt.ml;
 
-import java.util.List;
-
 /**
  * This utility class provides static functions to evaluate error rates or performance of a model on the data set
  */
@@ -30,7 +28,7 @@ public class LREvalUtil {
      * @param betasWithBeta0 beta weights
      * @return cross entropy of p from data vs true distribution
      */
-    public static double getEntropy(List<SparseObservation> obs, double[] betasWithBeta0) {
+    public static double getEntropy(SparseObservation[] obs, double[] betasWithBeta0) {
         double error = 0;
         for (SparseObservation o : obs) {
             double prob = LRUtil.calcProb(o.getX(), betasWithBeta0);
@@ -46,7 +44,7 @@ public class LREvalUtil {
      * @param betasWithBeta0 beta weights
      * @return cross entropy but normalized by number of impressions
      */
-    public static double getEntropyNormalized(List<SparseObservation> obs, double[] betasWithBeta0) {
+    public static double getEntropyNormalized(SparseObservation[] obs, double[] betasWithBeta0) {
         double error = 0;
         double totalWeight = 0;
         for (SparseObservation o : obs) {
