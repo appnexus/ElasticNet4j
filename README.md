@@ -1,4 +1,4 @@
-# ElasticNet4j
+# ElasticNet4j: A Performant Elastic Net Logistic Regression Solver in Java
 ## What is **ElasticNet4j**?
 A simple and efficient Machine Learning library for training Logistic Regression models on sparse data with rare events. The library uses Coordinate Descent for model training based on the Stanford University paper [Regularization Paths for Generalized Linear Models
 via Coordinate Descent](http://web.stanford.edu/%7Ehastie/Papers/glmnet.pdf).
