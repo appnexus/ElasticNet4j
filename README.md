@@ -1,5 +1,5 @@
-# Tomato Juice
-## What is **Tomato Juice**?
+# ElasticNet4j
+## What is **ElasticNet4j**?
 A simple and efficient Machine Learning library for training Logistic Regression models on sparse data with rare events. The library uses Coordinate Descent for model training based on the Stanford University paper [Regularization Paths for Generalized Linear Models
 via Coordinate Descent](http://web.stanford.edu/%7Ehastie/Papers/glmnet.pdf).
 
@@ -58,6 +58,14 @@ This example contains a full-run through of our logistic regression algorithm in
 
 ### `LogisticRegressionWithDataFromFile.java`
 This example is similar to the one above only it reads data from a file (`observations.tsv`) rather than generating data. 
+
+## Contributors
+* [Chinmay Nerurkar](https://github.com/nchinmay) [:e-mail:](mailto:nchinmay@hotmail.com)
+* [Noah Stebbins](https://github.com/nstebbins) [:e-mail:](mailto:nstebbins1@gmail.com)
+* [Tian Yu](https://github.com/ty277) [:e-mail:](mailto:ty277@cornell.edu)
+* [Lei Hu](https://github.com/interboys11) [:e-mail:](mailto:lei.stone.hu@gmail.com)
+* [Yana Volkovich](https://github.com/volkovich) [:link:](https://www.yanavolkovich.com)
+* [Abraham Greenstein](https://github.com/agreens) [:e-mail:](mailto:abraham.greenstein@gmail.com)
 
 ## License
 This project is licensed under the Apache License, Version 2.0 - see [LICENSE](LICENSE) for details.
