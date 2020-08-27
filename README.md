@@ -66,7 +66,7 @@ This example is similar to the one above only it reads data from a file (`observ
 * [Lei Hu](https://github.com/interboys11) [:e-mail:](mailto:lei.stone.hu@gmail.com)
 * [Yana Volkovich](https://github.com/volkovich) [:link:](https://www.yanavolkovich.com)
 * [Abraham Greenstein](https://github.com/agreens) [:e-mail:](mailto:abraham.greenstein@gmail.com)
-* [Moussa Taifi](https://github.com/moutai) [:e-mail:](mailto:moussa.taifi@outlook.com)[:link:](https://www.moussataifi.com)
+* [Moussa Taifi](https://github.com/moutai) [:e-mail:](mailto:moussa.taifi@outlook.com) [:link:](https://www.moussataifi.com)
 
 ## License
 This project is licensed under the Apache License, Version 2.0 - see [LICENSE](LICENSE) for details.
