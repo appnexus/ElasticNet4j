@@ -3,8 +3,8 @@
 A simple and efficient Machine Learning library for training Logistic Regression models on sparse data with rare events. The library uses Coordinate Descent for model training based on the Stanford University paper [Regularization Paths for Generalized Linear Models
 via Coordinate Descent](http://web.stanford.edu/%7Ehastie/Papers/glmnet.pdf).
 
-## Getting Started 
-We support building with [Maven](https://maven.apache.org/) 
+## Getting Started
+We support building with [Maven](https://maven.apache.org/)
 
 ## Building Locally
 ```
@@ -48,7 +48,7 @@ List<LRResult> lrResults = lr.calculateBetas(warmStart); // Train models for eac
 ```
 
 ## Examples
-For a guided walk-through of how to use the library, you can check out the examples package. Within the examples package, you can find two examples (`LogisticRegressionWithGeneratedData.java` and `LogisticRegressionWithDataFromFile.java`). 
+For a guided walk-through of how to use the library, you can check out the examples package. Within the examples package, you can find two examples (`LogisticRegressionWithGeneratedData.java` and `LogisticRegressionWithDataFromFile.java`).
 
 ### `LogisticRegressionWithGeneratedData.java`
 This example contains a full-run through of our logistic regression algorithm including
@@ -57,7 +57,7 @@ This example contains a full-run through of our logistic regression algorithm in
 * evaluating the performance of the training results on test data
 
 ### `LogisticRegressionWithDataFromFile.java`
-This example is similar to the one above only it reads data from a file (`observations.tsv`) rather than generating data. 
+This example is similar to the one above only it reads data from a file (`observations.tsv`) rather than generating data.
 
 ## Contributors
 * [Chinmay Nerurkar](https://github.com/nchinmay) [:e-mail:](mailto:nchinmay@hotmail.com)
@@ -66,6 +66,7 @@ This example is similar to the one above only it reads data from a file (`observ
 * [Lei Hu](https://github.com/interboys11) [:e-mail:](mailto:lei.stone.hu@gmail.com)
 * [Yana Volkovich](https://github.com/volkovich) [:link:](https://www.yanavolkovich.com)
 * [Abraham Greenstein](https://github.com/agreens) [:e-mail:](mailto:abraham.greenstein@gmail.com)
+* [Moussa Taifi](https://github.com/moutai) [:e-mail:](mailto:moussa.taifi@outlook.com)[:link:](https://www.moussataifi.com)
 
 ## License
 This project is licensed under the Apache License, Version 2.0 - see [LICENSE](LICENSE) for details.
